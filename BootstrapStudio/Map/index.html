@@ -30,7 +30,7 @@
         </div>
     </nav>
     <main class="page landing-page">
-        <div id='map' class="map" style="width:85%; height:600px; overflow:auto; margin:auto"></div>
+        <div id='map' class="map" style="width:85%; height:600px; overflow:hidden; margin:auto"></div>
     </main>
     <footer class="page-footer dark">
         <div class="footer-copyright">
@@ -38,13 +38,7 @@
         </div>
     </footer>
 
-    <script>
-        mapboxgl.accessToken = 'pk.eyJ1IjoiZGltYm9kdW1ibyIsImEiOiJjamplN2t4dXYxaDY2M2twOTQzMXNocjc2In0.g9BJj267dR8RBxBBgi2fyQ';
-        var map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/mapbox/streets-v10'
-        });
-    </script>
+    <script src="assets/js/mappage.js"></script>
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/theme.js"></script>
