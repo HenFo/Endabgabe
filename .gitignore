@@ -2,3 +2,7 @@
 node_modules/
 
 DataDB/
+
+mongo\.bat
+
+BootstrapStudio/Page\.bsdesign
