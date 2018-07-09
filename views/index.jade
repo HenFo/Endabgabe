@@ -1,0 +1,58 @@
+﻿doctype html
+// Author: Wortmann (410461) Fock(443068)
+// see: https://www.w3schools.com/bootstrap/bootstrap_get_started.asp
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    // Latest compiled and minified CSS
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+    // jQuery library
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+    // Latest compiled JavaScript
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+    link(rel='stylesheet', href='./public/stylesheets/styles.css')
+    title Geosoftware Abgabe 5.2
+  body
+    // Text Layout
+    .container-fluid
+      //
+        //responsive fixed size; for full width size use
+        "container-fluid"
+      h1 Website - Task 5
+      nav.navbar.navbar-inverse
+        .container-fluid
+          // Brand and toggle get grouped for better mobile display
+          .navbar-header
+            button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1', aria-expanded='false')
+              span.sr-only Toggle navigation
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+          // Collect the nav links, forms, and other content for toggling
+          #bs-example-navbar-collapse-1.collapse.navbar-collapse
+            ul.nav.navbar-nav
+              li.active
+                a(href='#')
+                  | Start 
+                  span.sr-only (current)
+              li
+                a(href='mappage') Map
+              li
+                a(href='impressum') Impressum
+          // /.navbar-collapse
+        // /.container-fluid
+      .row
+        .col-sm-4
+          h2 Map
+          p
+            | Show map and enter GeoJSON: 
+            a(href='mappage', target='_blank') Map
+            br
+        .col-sm-8
+          h2 Authors:
+          p
+            | Show authors: 
+            a(href='impressum.jade', target='_blank') Impressum
+          p
