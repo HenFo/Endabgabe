@@ -2,12 +2,13 @@
     box-shadow: 1px 0px 20px;
     padding: 9px 0px;
 }
-
-.aktiv {
+.navbar {
+    padding: 10px 0px;
+}
+.aufSeite {
     font-weight: bold;
     color: black;
 }
-
 .page {
     margin: 20px 0px;
 }
@@ -16,6 +17,7 @@
     border-right-color: gainsboro;
 }
 .btn.red {
+    color:white;
     background-color: red;
     border-color: inherit
 }

@@ -39,9 +39,27 @@ L.control.zoom({
 //    map.addControl(control);
 //});
 
+map.addControl(new L.Control.Fullscreen().setPosition("topright"));
 L.control.layers(null,{
     "outdoor": outdor.addTo(map),
     "satellite": satellite,
 }, { position: 'topright' }).addTo(map);
-map.addControl(new L.Control.Fullscreen().setPosition("topright"));
+
+/**
+ * GPS
+ */
+function getPosition() {
+    map.locate({ setView: true, maxZoom: 16 });
+}
+
+function onLocationFound(e) {
+    var radius = e.accuracy / 2;
+
+    L.marker(e.latlng).addTo(map)
+        .bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+    L.circle(e.latlng, radius).addTo(map);
+}
+map.on('locationfound', onLocationFound);
+
 
