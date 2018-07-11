@@ -1,5 +1,5 @@
 ﻿.shadow {
-    box-shadow: 1px 0px 20px;
+    box-shadow: 1px 0px 15px;
     padding: 9px 0px;
 }
 .navbar {
@@ -24,7 +24,7 @@
 .mapCol {
     padding: 0px 20px;
 }
-#map.map {
+.map {
     width: 100%;
     height: 600px;
     overflow: hidden;
@@ -36,4 +36,14 @@
 }
 .footer-copyright {
     margin-top: 5px;
+}
+.editingOptions {
+    margin-top: 15px;
+}
+.btn.edit:hover {
+    color:inherit;
+}
+.listEditOption {
+    margin-left: 30px;
+    display:none;
 }

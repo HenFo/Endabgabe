@@ -5,20 +5,27 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Brand</title>
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/stylesheets/stylesheet.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js" integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw==" crossorigin=""></script>
+    <script src="https://code.jquery.com/ui/1.8.24/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
     <script src='https://api.mapbox.com/mapbox-gl-js/v0.46.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v0.46.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+    <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
+    <script src="./assets/js/leaflet-custom-searchbox-master/dist/leaflet.customsearchbox.min.js"></script>
+    <link href="./assets/js/leaflet-custom-searchbox-master/dist/searchbox.min.css" rel="stylesheet" />
 </head>
 
 <body>
-    <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-white clean-navbar">
+    <nav class="navbar navbar-light navbar-expand-lg bg-white clean-navbar shadow">
         <div class="container">
-            <a class="navbar-brand logo" href="#">Karte der WWU</a><button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <a class="navbar-brand logo" href="index.html">Karte der WWU</a><button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse"
                  id="navcol-1">
                 <ul class="nav navbar-nav ml-auto">
@@ -26,19 +33,54 @@
                     <li class="nav-item" role="presentation"><a class="nav-link" href="institute.html">Institute</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="mensen.html">Mensen</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="fachbereich.html">Fachbereiche</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="editMap.html" style="font-weight: bold; color: black">Edit map</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link aufSeite" href="editMap.html">Edit map</a></li>
                 </ul>
             </div>
         </div>
     </nav>
     <main class="page landing-page">
-        <div id='mapEdit' class="map" style="width:85%; height:600px; overflow:hidden; margin:auto"></div>
+        <div class="container-fluid">
+            <div class="row" style="padding-left:10px">
+                <div class="col-sm-3 itemColum">
+                    <button class="btn red" type="button" onclick="startEditing()" style="padding:20px 33%">Start Editing</button>
+                    <div class="editingOptions" id="editingOptions">
+                        <div id="institute">
+                            <h2 class="editingOptions">Institute:</h2>
+                            <button class="btn edit" type="button" onclick="openList('addInst')">Add Institut</button> <br />
+                            <div class="listEditOption" id="addInst">
+                                <ul>
+                                    <li>Formular</li>
+                                    <li onclick="addInstitut()">per Hand</li>
+                                </ul>
+                            </div>
+                            <button class="btn edit" type="button" onclick="editInstitut()">Edit Institute</button> <br />
+                        </div>
+                        <div id="mensen">
+                            <h2 class="editingOptions">Mensen:</h2>
+                            <button class="btn edit" type="button" onclick="addMensa()">Add Mensa</button> <br />
+                            <button class="btn edit" type="button" onclick="editMensa()">Edit Mensa</button> <br />
+                        </div>
+                        <div id="fachbereich">
+                            <h2 class="editingOptions">Fachbereiche:</h2>
+                            <button class="btn edit" type="button" onclick="addFachbereich()">Add Fachbereich</button> <br />
+                            <button class="btn edit" type="button" onclick="editFachbereich()">Edit Fachbereiche</button> <br />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-9 mapCol">
+                    <div id='mapEdit' class="map"></div>
+                </div>
+            </div>
+        </div>
     </main>
-    <footer class="page-footer dark">
-        <div class="footer-copyright" style="margin-top:0;">
+
+    <footer class="page-footer dark" style="padding-top: 10px;">
+        <div class="footer-copyright" style="margin-top: 5px;">
             <p>© 2018 Henry Fock</p>
         </div>
     </footer>
+
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/theme.js"></script>
