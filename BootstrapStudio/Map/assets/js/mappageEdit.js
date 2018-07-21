@@ -81,6 +81,6 @@ map.on(L.Draw.Event.CREATED, function (event) {
     }
 });
 
-function openList(listID) {
-    $("#" + listID).show();
+function toggleList(listID) {
+    $("#" + listID).toggle();
 }

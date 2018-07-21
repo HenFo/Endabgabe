@@ -13,6 +13,15 @@ L.control.zoom({
     position: 'topright'
 }).addTo(map);
 
+var Institute = L.featureGroup().addTo(map);
+var Mensen = L.featureGroup().addTo(map);
+var Fachbereiche = L.featureGroup().addTo(map);
+L.control.layers(null, {
+    'Institute': Institute,
+    'Mensen': Mensen,
+    'Fachbereiche': Fachbereiche
+}, { position: 'topleft', collapsed: false }).addTo(map);
+
 ///**
 // * @see https://github.com/8to5Developer/leaflet-custom-searchbox
 // */
