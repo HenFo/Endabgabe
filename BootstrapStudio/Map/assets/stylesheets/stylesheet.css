@@ -5,7 +5,7 @@
 .navbar {
     padding: 10px 0px;
 }
-.aufSeite {
+.activ {
     font-weight: bold;
     color: black;
 }
@@ -17,9 +17,11 @@
     border-right-color: gainsboro;
 }
 .btn.red {
+    padding: 20px 50px;
     color:white;
     background-color: red;
-    border-color: inherit
+    border-color: inherit;
+    width: auto;
 }
 .mapCol {
     padding: 0px 20px;
@@ -46,4 +48,26 @@
 .listEditOption {
     margin-left: 30px;
     display:none;
+}
+.textfeld {
+    width: auto;
+    border: 2px solid #e6e6e6;
+    border-radius: 10px;
+    padding: 3px;
+}
+h3 {
+    font-weight:bolder;
+}
+.options {
+    background-color: #b3e6ff;
+    border-style:none;
+    border-radius: 10px;
+    color:black;
+}
+.btn.options:hover {
+    color: inherit;
+    background-color: #66ccff;
+}
+.institutForm {
+    margin-bottom:20px;
 }

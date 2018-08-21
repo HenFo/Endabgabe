@@ -42,7 +42,7 @@
         <div class="container-fluid">
             <div class="row" style="padding-left:10px">
                 <div class="col-sm-3 itemColum">
-                    <button class="btn red" type="button" onclick="startEditing()" style="padding:20px 33%">Start Editing</button>
+                    <button class="btn red" type="button" onclick="startEditing()">Start Editing</button>
                     <div class="editingOptions" id="editingOptions">
                         <div id="institute">
                             <h2 class="editingOptions">Institute:</h2>
@@ -69,6 +69,17 @@
                 </div>
 
                 <div class="col-sm-9 mapCol">
+                    <div id="institutForm">
+                        <h3>Name des Institutes</h3>
+                        <input id="InstitutName" type="text" class="textfeld" placeholder="Name des Institutes" />
+                        <h3>Fachbereich</h3>
+                        <select id="fachbereichSelect"></select>
+                        <h3>Bild</h3>
+                        <input id="InstitutBildURL" type="url" class="textfeld" />
+                        <h3>Geometrie hinzufügen: <br /> wähle aus folgenden Optionen:</h3>
+                        <button class="btn options">Geometrie zeichnen</button>
+                        <button class="btn options">GeoJSON per link oder URL</button>
+                    </div>
                     <div id='mapEdit' class="map"></div>
                 </div>
             </div>
