@@ -53,7 +53,7 @@
     width: auto;
     border: 2px solid #e6e6e6;
     border-radius: 10px;
-    padding: 3px;
+    padding: 3px 5px;
 }
 h3 {
     font-weight:bolder;
@@ -70,4 +70,22 @@ h3 {
 }
 .institutForm {
     margin-bottom:20px;
+}
+textarea.geoJSON {
+    display: none;
+    height:300px;
+    width:300px;
+}
+button.green {
+    background-color: #41c653;
+    border-style:none;
+    border-radius:10px;
+    color: white;
+}
+    button.green:hover {
+        color: white;
+        background-color: #37a846;
+    }
+.noDisplay {
+    display:none;
 }
