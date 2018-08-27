@@ -182,6 +182,8 @@ $(document).ready(function () {
     $("#Bzeichnen").click(function () {
         $("#geoJSON").hide();
         $("#mapEdit").show(1000);
+        $(this).prop("disabled", true);
+        $("#Bcopy").prop("disabled", false);
         hGeometryInput = 0;
     });
 });
@@ -190,6 +192,8 @@ $(document).ready(function () {
     $("#Bcopy").click(function () {
         $("#mapEdit").hide();
         $("#geoJSON").show(1000);
+        $(this).prop("disabled", true);
+        $("#Bzeichnen").prop("disabled", false);
         hGeometryInput = 1;
     });
 });

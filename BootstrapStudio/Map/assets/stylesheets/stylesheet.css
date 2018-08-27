@@ -5,7 +5,7 @@
 .navbar {
     padding: 10px 0px;
 }
-.activ {
+.aktiv {
     font-weight: bold;
     color: black;
 }
@@ -39,9 +39,9 @@
 .footer-copyright {
     margin-top: 5px;
 }
-.editingOptions {
+/*.editingOptions {
     margin-top: 15px;
-}
+}*/
 .btn.edit:hover {
     color:inherit;
 }
@@ -64,12 +64,18 @@ h3 {
     border-radius: 10px;
     color:black;
 }
-.btn.options:hover {
+.btn.options:hover:enabled {
     color: inherit;
     background-color: #66ccff;
 }
+.btn:hover {
+    color:inherit;
+}
+.btn:disabled {
+    cursor:not-allowed;
+}
 .institutForm {
-    margin-bottom:20px;
+    margin-bottom: 20px;
 }
 textarea.geoJSON {
     display: none;
@@ -88,4 +94,7 @@ button.green {
     }
 .noDisplay {
     display:none;
+}
+aside button {
+    color:inherit;
 }
