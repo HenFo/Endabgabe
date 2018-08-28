@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Institut</title>
+    <title>Fachbereich - erstellen</title>
     <link rel="stylesheet" href="./assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="./assets/stylesheets/stylesheet.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i">
@@ -27,13 +27,14 @@
     <nav class="navbar navbar-light navbar-expand-lg bg-white clean-navbar shadow">
         <div class="container">
             <a class="navbar-brand logo" href="index.html">Karte der WWU</a><button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="navcol-1">
+            <div class="collapse navbar-collapse"
+                 id="navcol-1">
                 <ul class="nav navbar-nav ml-auto">
                     <li class="nav-item" role="presentation"><a class="nav-link" href="index.html">Home</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="institute.html">Institute</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="mensen.html">Mensen</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="fachbereich.html">Fachbereiche</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link aktiv" href="editMap.html">Edit map</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link activ" href="editMap.html">Edit map</a></li>
                 </ul>
             </div>
         </div>
@@ -41,47 +42,38 @@
     <main class="page landing-page">
         <div class="container-fluid">
             <div class="row" style="padding-left:10px">
-                <div class="col-sm-4 itemColum">
+                <div class="col-sm-3 itemColum">
                     <div class="editingOptions" id="editingOptions">
-                        <div id="fachbereich">
-                            <h2 class="editingOptions">Fachbereiche:</h2>
-                            <a class="a-edit" href="createFachbereich.html">Add Fachbereich</a><br />
-                            <a class="a-edit" href="editFachbereich.html">Edit Fachbereiche</a> <br />
-                        </div>
-                        <div id="institute">
-                            <h2 class="editingOptions">Institute:</h2>
-                            <a class="a-edit" href="createInstitut.html">Add Institut</a> <br />
-                            <a class="a-edit" href="editInstitut.html">Edit Institute</a> <br />
-                        </div>
-                        <div id="mensen">
-                            <h2 class="editingOptions">Mensen:</h2>
-                            <a class="a-edit" href="createMensa.html">Add Mensa</a> <br />
-                            <a class="a-edit" href="editMensa.html">Edit Mensa</a> <br />
+                        <div class="editingOptions" id="editingOptions">
+                            <div id="institute">
+                                <h2 class="editingOptions">Institute:</h2>
+                                <a class="a-edit" href="createInstitut.html">Add Institut</a> <br />
+                                <a class="a-edit" href="editInstitut.html">Edit Institute</a> <br />
+                            </div>
+                            <div id="fachbereich">
+                                <h2 class="editingOptions">Fachbereiche:</h2>
+                                <a class="a-edit" href="createFachbereich.html">Add Fachbereich</a><br />
+                                <a class="a-edit" href="editFachbereich.html">Edit Fachbereiche</a> <br />
+                            </div>
+                            <div id="mensen">
+                                <h2 class="editingOptions">Mensen:</h2>
+                                <a class="a-edit" href="createMensa.html">Add Mensa</a> <br />
+                                <a class="a-edit" href="editMensa.html">Edit Mensa</a> <br />
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-sm-8 mapCol">
-                    <h1>Bitte wähle eine der Optionen auf der linken Seite</h1>
-                    <!--<div id="institutForm">
-                        <h3>Name des Institutes</h3>
-                        <input id="InstitutName" type="text" class="textfeld" placeholder="Name des Institutes" />
-                        <h3>Fachbereich</h3>
-                        <select id="fachbereichSelect" style="width:auto" class="textfeld">
-                            <option>wähle Fachbereich</option>
-                            <option>Test</option>
-                        </select>
-                        <h3>Bild</h3>
-                        <input id="InstitutBildURL" type="url" class="textfeld" placeholder="Bild-URL einfügen"/>
-                        <h3>Geometrie hinzufügen: <br /> wähle aus folgenden Optionen:</h3>
-                        <button id="Bzeichnen" class="btn options">Geometrie zeichnen</button>
-                        <button id="Bcopy" class="btn options">GeoJSON per Kopie oder URL</button> <br />
-                        <div>
-                            <br /> <div id='mapEdit' class="map"></div>
-                            <textarea id="geoJSON" class="geoJSON textfeld" placeholder="hier den Link oder das GeoJSON Objekt einfügen"></textarea> <br />
-                        </div>
-                        <button id="addInstitut" type="submit" class="btn green" onclick="addInstitut()">Submit</button>
-                    </div>-->
+                <div class="col-sm-9 mapCol">
+                    <div id="fachbereichForm">
+                        <h3>Name des Fachbereiches</h3>
+                        <input id="fachbereichName" type="text" class="textfeld" placeholder="Name des Fachbereiches" autofocus/>
+                        <h3>Abkürzung</h3>
+                        <input id="fachbereichAbkuerzung" type="text" class="textfeld" placeholder="z.B. FB14" maxlength="4" />
+                        <h3>Webseite</h3>
+                        <input id="fachbereichWebseite" type="url" class="textfeld" placeholder="Adresse der Webseite" />
+                        <br /><br /><button id="addFachbereich" type="submit" class="btn green" onclick="addFachbereich()">Submit</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -96,8 +88,7 @@
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/theme.js"></script>
-    <!--<script src="assets/js/mappageEdit.js"></script>-->
-    <script src="assets/js/formularInstitutScript.js"></script>
+    <script src="assets/js/formularfachbereichScript.js"></script>
 </body>
 
 </html>
