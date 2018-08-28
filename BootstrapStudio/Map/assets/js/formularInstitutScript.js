@@ -136,6 +136,9 @@ function addInstitut() {
                 alert("Geometrie eingeben");
                 break;
         }
+        document.getElementById("InstitutName").value = "";
+        document.getElementById("fachbereichSelect").value = 1;
+        document.getElementById("InstitutBildURL").value = "";
     }
 }
 
