@@ -42,52 +42,7 @@ function addFachbereich() {
         document.getElementById("fachbereichAbkuerzung").value = "";
         document.getElementById("fachbereichWebseite").value = "";
 
-        addToDatabase(hFachb);
-    }
-}
-
-/**
- * entscheidet ob das GeoJSON Objekt eine Featurecollection ist oder nicht 
- * und gibt dem entsprechend passend die Geometrie zurueck
- * @param {JSON} pGeoJSON GeoJSON Objekt
- * @returns Geometrie des ersten Feature aus der Featurecollection oder Geometrie eines einzelnen Features
- */
-function returnGeometry(pGeoJSON) {
-    if (pGeoJSON.type == "FeatureCollection") {
-        return pGeoJSON.features[0].geometry;
-    } else {
-        return pGeoJSON.geometry;
-    }
-}
-
-/**
- * takes the input from the html page an if it is a 
- * valide GeoJSON Object, it adds the features to the map.
- */
-function loadDoc() {
-    if (isURL(document.getElementById("geoJSON").value)) {
-        var xhttp = new XMLHttpRequest();
-        var geoJsonObject;
-        xhttp.onreadystatechange = function () {
-            if (this.status == 200 && this.readyState == 4) {
-                try {
-                    geoJsonObject = JSON.parse(this.responseText);
-                    console.log(geoJsonObject);
-                    return geoJsonObject;
-                } catch (e) { alert(e) };
-            }
-        };
-
-        var link = "" + document.getElementById("geoJSON").value;
-        console.log(link);
-        xhttp.open("GET", link, true);
-        xhttp.send();
-    } else {
-        try {
-            geoJsonObject = JSON.parse("" + document.getElementById("geoJSON").value);
-            return geoJsonObject;
-        } catch (e) { alert(e) };
-        
+        addToDatabase(hFachb.toJSON());
     }
 }
 
@@ -98,26 +53,6 @@ function loadDoc() {
 function addToDatabase(object) {
     console.log(object);
 }
-
-$(document).ready(function () {
-    $("#Bzeichnen").click(function () {
-        $("#geoJSON").hide();
-        $("#mapEdit").show(1000);
-        $(this).prop("disabled", true);
-        $("#Bcopy").prop("disabled", false);
-        hGeometryInput = 0;
-    });
-});
-
-$(document).ready(function () {
-    $("#Bcopy").click(function () {
-        $("#mapEdit").hide();
-        $("#geoJSON").show(1000);
-        $(this).prop("disabled", true);
-        $("#Bzeichnen").prop("disabled", false);
-        hGeometryInput = 1;
-    });
-});
 
 /**
  * takes a string and checks if it is an url
