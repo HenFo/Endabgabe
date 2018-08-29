@@ -21,6 +21,9 @@
     <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
     <script src="./assets/js/leaflet-custom-searchbox-master/dist/leaflet.customsearchbox.min.js"></script>
     <link href="./assets/js/leaflet-custom-searchbox-master/dist/searchbox.min.css" rel="stylesheet" />
+    <link rel='stylesheet' href='./assets/stylesheets/leaflet-routing-machine.css' />
+    <script src='./assets/js/leaflet-routing-machine.js'></script>
+    <script src='./assets/js/Control.Geocoder.js'></script>
 </head>
 
 <body>
@@ -44,15 +47,7 @@
             <div class="row" style="padding-left:10px">
                 <div class="col-sm-3 itemColum">
                     <div id="Umgebung">
-                        <p style="margin-bottom:4px;">Zeig mir die Umgebung!</p><button class="btn red" onclick="getPosition()" type="button">Orte mich&nbsp;<i class="fa fa-crosshairs"></i></button>
-                    </div>
-                    <div id="Fundliste" class="fundliste" style="margin-top:24px;">
-                        <ul>
-                            <li>Item 1</li>
-                            <li>Item 2</li>
-                            <li>Item 3</li>
-                            <li>Item 4</li>
-                        </ul>
+                        <p style="margin-bottom:4px;">zur nächsten Mensa!</p><button class="btn red" onclick="getPosition()" type="button">Orte mich&nbsp;<i class="fa fa-crosshairs"></i></button>
                     </div>
                 </div>
 
