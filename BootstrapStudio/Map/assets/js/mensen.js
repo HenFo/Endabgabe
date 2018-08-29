@@ -67,12 +67,14 @@ function getMensen() {
             for (var i = 0; i < mensen.length; i++) {
                 getMeal(mensen[i]);
             }
+            console.log(mensen);
         },
         error: function (xhr) {
             alert(xhr.statusText);
         }
     });
 }
+
 
 function getMeal(pMensa) {
     //aktuelles Datum
@@ -91,12 +93,14 @@ function getMeal(pMensa) {
         type: "GET",
         success: function (data) {
             for (var j = 0; j < data.length; j++) {
-                var gericht = new Gericht(data[j].id, pMensa.id, data[j].name, data[j].prices);
+                var gericht = new Gericht(data[j].id, pMensa.name, data[j].name, data[j].prices);
                 hGerichte.push(gericht);
             }
-            console.log(hGerichte);
+            //console.log(hGerichte);
+            var popUp = generatePopUp(hGerichte);
+            Mensen.addLayer(L.marker(pMensa.coordinaten).addTo(map).bindPopup("<h2>" + pMensa.name + "</h2><br/>" + popUp));
+            
 
-            Mensen.addLayer(L.marker(pMensa.coordinaten).addTo(map).bindPopup("<h2>" + pMensa.name + "</h2><br/>" + generatePopUp(hGerichte)));
         },
         error: function (xhr) {
             Mensen.addLayer(L.marker(pMensa.coordinaten).addTo(map).bindPopup("hier ist die Mensa " + pMensa.name +"<br/> Keine Daten zu den Gerichten"));
@@ -118,5 +122,7 @@ function generatePopUp(pGericht) {
     }
     return "<table style='border-collapse: collapse;'><tr><th>Gericht</th><th>Preis</th></tr>" + str + "</table>";
 }
+
+
 
 
