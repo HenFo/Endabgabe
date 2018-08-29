@@ -1,7 +1,5 @@
 "use strict";
 
-//https://openmensa.org/api/v2/canteens/?near[lat]=51.96&near[lng]=7.63
-
 class Mensa {
     /**
      * erstellt die Klasse Mensa
@@ -117,10 +115,10 @@ function getMeal(pMensa) {
 function generatePopUp(pGericht) {
     var str = "";
     for (var i = 0; i < pGericht.length; i++) {
-        str = str + "<tr><td>" + pGericht[i].name + "</td><td><table><tr><th>Studenten</th><th>Angestellte</th><th>Sonstige</th></tr><tr><td>" + pGericht[i].preise.students + "</td><td>" + pGericht[i].preise.employees + "</td><td>" + pGericht[i].preise.others+"</td></tr></table></td></tr>";
+        str = str + "<tr><td>" + pGericht[i].name + "</td><td><table><tr><th>Studenten</th><th>Angestellte</th><th>Sonstige</th></tr><tr><td>" + pGericht[i].preise.students + "&euro;</td><td>" + pGericht[i].preise.employees + "&euro;</td><td>" + pGericht[i].preise.others +"&euro;</td></tr></table></td></tr>";
 
     }
-    return "<table style='border-collapse: collapse;'><tr><th>Gericht</th><th>Preis</th></tr>" + str + "</table>";
+    return "<table><tr><th>Gericht</th><th>Preis</th></tr>" + str + "</table>";
 }
 
 
