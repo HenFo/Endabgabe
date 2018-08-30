@@ -16,15 +16,20 @@
     border-right: solid;
     border-right-color: gainsboro;
 }
-.btn.red {
-    padding: 20px 50px;
+.red {
     color:white;
     background-color: red;
     border-color: inherit;
-    width: auto;
+    width: 100%;
+    margin:auto;
+    border-radius:10px;
+    height:60px;
+}
+.btn.red:hover {
+    color:white;
 }
 .mapCol {
-    padding: 0px 20px;
+    
 }
 .map {
     width: 100%;
@@ -98,6 +103,9 @@ button.green {
 aside button {
     color:inherit;
 }
+aside button:hover {
+    color:inherit;
+}
 table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
@@ -112,3 +120,72 @@ tr.tableEmpty {
     background-color: #dddddd;
     opacity: 0.6;
 }
+.popup {
+    margin: auto;
+    border: hidden;
+    background-color: #00b33c;
+    border-radius: 10px;
+    color: white;
+    width: 100%;
+}
+    .popup:hover {
+        background-color: #009933;
+        color:white;
+    }
+.gps {
+    width:auto;
+    margin:auto;
+}
+.navigation {
+    width:auto;
+    margin:5px;
+}
+.orange {
+    height:60px;
+    margin: auto;
+    border: hidden;
+    background-color: #ff8c1a;
+    border-radius: 10px;
+    color: white;
+    width: 100%;
+    padding: 7px 5px;
+    word-wrap: break-word !important;
+    white-space: normal !important;
+}
+.orange:hover {
+    color:white;
+}
+.leaflet-popup-content-wrapper {
+    max-width:490px;
+    overflow:auto;
+}
+.leaflet-routing-container-hide .leaflet-routing-collapse-btn {
+    left:1px;
+    top:0px;
+}
+@media only screen and (max-width: 450px) {
+    .leaflet-routing-container.leaflet-bar.leaflet-control {
+        overflow:auto;
+    }
+}
+@media only screen and (max-width: 575px) {
+    .btn.orange {
+        width:49%;
+        margin-bottom:10px;
+        height:60px;
+    }
+    .btn.red {
+        width:49%;
+        height:60px;
+    }
+    .logo {
+        margin-right:0px;
+        margin-left: 20px;
+    }
+    .navbar-toggler {
+        margin-right:20px;
+    }
+}
+
+
+

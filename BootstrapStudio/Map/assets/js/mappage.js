@@ -32,71 +32,114 @@ L.control.layers(null,{
     "satellite": satellite,
 }, { position: 'topright' }).addTo(map);
 
+var control = L.Routing.control({
+    router: L.routing.mapbox(accessToken),
+    waypoints: [
+        null,null
+    ],
+    routeWhileDragging: true,
+    geocoder: L.Control.Geocoder.nominatim()
+}).on('routingerror', function (e) {
+        try {
+            map.getCenter();
+        } catch (e) {
+            map.fitBounds(L.latLngBounds(control1.getWaypoints().map(function (wp) { return wp.latLng; })));
+        }
+        //handleError(e);
+    }).addTo(map);
+//control.hide(); //manchmal Probleme, dass die minimierte Version nicht angezeigt wird. Dann die Seite neu laden.
+//error control
+L.Routing.errorControl(control).addTo(map);
+
+//globaler Speicher fuer die aktuelle Position
+var latestPosition = null;
 /**
  * GPS
  */
 function getPosition() {
-    map.locate({ setView: true, maxZoom: 16 });
+    map.locate({ setView: false, maxZoom: 16 });
 }
 
 /**
  * wird getriggert wenn ein GPS Signal empfangen wurde.
- * Dann wird die am naechsten liegende Mensa ermittelt und die Routedahin berechnet
+ * Dann wird der Standort als Startpunkt fuer die Navigation ausgewaehlt
  * @param {any} e
  */
 function onLocationFound(e) {
-    var radius = e.accuracy / 2;
-
-    L.circle(e.latlng, radius).addTo(map);
-
-    var mensa = nextMensa(e.latlng); //sammeln der noetigen Informationen
-    var control = L.Routing.control({
-        router: L.routing.mapbox(accessToken),
-        waypoints: [
-            e.latlng,
-            { lat: mensa.lat, lng: mensa.lng }
-        ],
-        //routeWhileDragging: true,
-        //geocoder: L.Control.Geocoder.nominatim(),
-    }).addTo(map);
-    control.hide(); //um das nervig groﬂe Fenster zu schlieﬂen
-
-    //error control
-    L.Routing.errorControl(control).addTo(map);
-
-    var dist = Math.floor(100 * mensa.dist) / 100; //abrunden der Entfernung auf 2 Nachkommeastellen
-    L.marker(e.latlng).addTo(map)
-        .bindPopup("Du bist in einem " + radius + "m Radius von diesem Punkt <br/> Die naechste Mensa ist " + mensa.mensa + " mit " + dist+"km entfernung ").openPopup();
+    latestPosition = e;
+    var radius = latestPosition.accuracy / 2;
+    L.circle(latestPosition.latlng, radius).addTo(map);
+    L.marker(latestPosition.latlng).bindPopup("Du befindest dich in diesem " + radius + " Meter Radius").addTo(map).openPopup();
+    control.spliceWaypoints(0, 1, latestPosition.latlng);
+    control.show();
 }
 map.on('locationfound', onLocationFound);
+
+/**
+ * Navigiert dich zur naechstgelegenden Mensa
+ */
+function routeToNextMensa() {
+    if (latestPosition != null) {
+        var mensa = nextMensa(latestPosition.latlng); //sammeln der noetigen Informationen
+        control.spliceWaypoints(0, 1, latestPosition.latlng);
+        control.spliceWaypoints(control.getWaypoints().length - 1, 1, { lat: mensa.lat, lng: mensa.lng });
+        control.show();
+    } else try {
+        var mensa = nextMensa(latestPosition.latlng); //sammeln der noetigen Informationen
+        control.spliceWaypoints(control.getWaypoints().length - 1, 1, { lat: mensa.lat, lng: mensa.lng });
+        control.show();
+    } catch(e) {
+        alert("Bitte Startpunkt auswaehlen indem Du auf die Karte klickst oder GPS starten unter 'Orte mich!'. Dann probier es nochmal");
+    }
+}
+
+/**
+ * navigiert dich von deinem aktuellem Standort zu den naechsten Coordinaten.
+ * Wenn kein Startort festgelegt ist, so werden die Koordinaten als 
+ * naechstes Ziel in der Navigation gespeichert.
+ * Funktion wird duch Button im Popup der Mensen ausgefuehrt.
+ * @param {any} pLat
+ * @param {any} pLng
+ */
+function toDestination(pLat, pLng) {
+    if (latestPosition != null) {
+        control.spliceWaypoints(0, 1, latestPosition.latlng);
+        //console.log(pLat, pLng);
+        control.spliceWaypoints(control.getWaypoints().length - 1, 1, { lat: pLat, lng: pLng });
+        control.show();
+    } else {
+        control.spliceWaypoints(control.getWaypoints().length - 1, 1, { lat: pLat, lng: pLng });
+        control.show();
+    }
+}
 
 /////////////////////////////////////////////////////////////////////////////////////
 //aus der Code-Review von Nr. 7 Buttons to create start and end points of the route
 function createButton(label, container) {
     var btn = L.DomUtil.create('button', '', container);
     btn.setAttribute('type', 'button');
+    btn.setAttribute('class', 'btn popup navigation')
     btn.innerHTML = label;
     return btn;
 }
 map.on('click', function (e) {
     var container = L.DomUtil.create('div'),
-        startBtn = createButton('Start from this location', container),
-        destBtn = createButton('Go to this location', container);
+        startBtn = createButton('Hier starten', container),
+        destBtn = createButton('Hier hin', container);
 
     L.popup()
         .setContent(container)
         .setLatLng(e.latlng)
         .openOn(map);
 
-
     L.DomEvent.on(startBtn, 'click', function () {
         control.spliceWaypoints(0, 1, e.latlng);
-        map1.closePopup();
+        map.closePopup();
     });
 
     L.DomEvent.on(destBtn, 'click', function () {
         control.spliceWaypoints(control.getWaypoints().length - 1, 1, e.latlng);
-        map1.closePopup();
+        map.closePopup();
     });
 });
 /////////////////////////////////////////////////////////////////////////////////////
