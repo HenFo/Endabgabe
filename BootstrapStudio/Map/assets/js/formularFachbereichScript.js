@@ -10,7 +10,6 @@ class Fachbereich {
         this.zName = pName;
         this.zAbk = pAbk;
         this.zWebseite = pWebseite;
-        this.zInstitute = [];
     }
 
     toJSON() {
@@ -18,7 +17,6 @@ class Fachbereich {
             "name": this.zName,
             "abkuerzung": this.zAbk,
             "webseite": this.zWebseite,
-            "institute": []
         }
         return json;
     }

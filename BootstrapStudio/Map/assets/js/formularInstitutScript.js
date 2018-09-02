@@ -99,7 +99,6 @@ class Institut {
         };
         return geoJSON;
     }
-
 }
 
 
@@ -118,7 +117,7 @@ function addInstitut() {
                 try {
                     if (geoJsonLayers.features.length > 0) {
                         var institut = new Institut(name, fachbereich, img, geoJsonLayers.features[0].geometry);
-                        console.log(institut.toGeoJSON());
+                        //console.log(institut.toGeoJSON());
                         addToDatabase(institut.toGeoJSON());
                     } else { alert("bitte Geometrie zeichnen"); }
                 } catch (e) { alert(e) };
@@ -128,7 +127,7 @@ function addInstitut() {
                     var json = loadDoc();
                     var geometry = returnGeometry(json);
                     var institut = new Institut(name, fachbereich, img, geometry);
-                    console.log(institut.toGeoJSON());
+                    //console.log(institut.toGeoJSON());
                     addToDatabase(institut.toGeoJSON());
                 } catch (e) {alert(e)}
                 break;
@@ -179,6 +178,10 @@ function loadDoc() {
         } catch (e) { alert(e) };
         
     }
+}
+
+function addToDatabase(pJsonInstitut) {
+    instituteArr.push(pJsonInstitut);
 }
 
 $(document).ready(function () {

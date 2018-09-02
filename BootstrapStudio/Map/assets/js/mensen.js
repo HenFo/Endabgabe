@@ -61,11 +61,11 @@ function getMensen() {
             for (var i = 0; i < data.length; i++) {
                 mensen.push(new Mensa(data[i].id, data[i].name, data[i].coordinates));
             }
-            console.log(mensen);
+            //console.log(mensen);
             for (var i = 0; i < mensen.length; i++) {
                 getMeal(mensen[i]);
             }
-            console.log(mensen);
+            //console.log(mensen);
         },
         error: function (xhr) {
             alert(xhr.statusText);
@@ -96,23 +96,20 @@ function getMeal(pMensa) {
             }
             //console.log(hGerichte);
             var popUp = generatePopUp(hGerichte);
-            Mensen.addLayer(L.marker(pMensa.coordinaten).addTo(map).bindPopup("<h2>" + pMensa.name + "</h2><br/>" + popUp));
-            
-
+            Mensen.addLayer(L.marker(pMensa.coordinaten).addTo(map).bindPopup("<h5>" + pMensa.name + "</h5>" + popUp + "<br/><button class='btn popup' onclick='toDestination(" + pMensa.coordinaten + ")'>Zu dieser Mensa navigieren</button>"));
         },
         error: function (xhr) {
-            Mensen.addLayer(L.marker(pMensa.coordinaten).addTo(map).bindPopup("hier ist die Mensa " + pMensa.name +"<br/> Keine Daten zu den Gerichten"));
-            console.log("kein Gericht gefunden");
+            Mensen.addLayer(L.marker(pMensa.coordinaten).addTo(map).bindPopup("<h5>" + pMensa.name + "</h5><table><tr><td>Keine Daten zu den Gerichten</td></tr></table> <br/><button class='btn popup' onclick='toDestination(" + pMensa.coordinaten + ")'>Zu dieser Mensa navigieren</button>"));
+            //console.log("kein Gericht gefunden");
         }
     });
-
 }
 
 /**
  * Erstellt ein passendes PopUp
  * @param {Gericht[]} pGericht
  */
-function generatePopUp(pGericht) {
+function generatePopUp(pGericht) { //navigation hinzufuegen
     var str = "";
     for (var i = 0; i < pGericht.length; i++) {
         str = str + "<tr><td>" + pGericht[i].name + "</td><td><table><tr><th>Studenten</th><th>Angestellte</th><th>Sonstige</th></tr><tr><td>" + pGericht[i].preise.students + "&euro;</td><td>" + pGericht[i].preise.employees + "&euro;</td><td>" + pGericht[i].preise.others +"&euro;</td></tr></table></td></tr>";
