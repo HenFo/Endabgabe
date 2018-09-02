@@ -8,3 +8,5 @@ mongo\.bat
 BootstrapStudio/Page\.bsdesign
 
 BootstrapStudio/Map/update/
+
+use mongo\.bat

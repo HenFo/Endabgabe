@@ -74,6 +74,10 @@ h3, h2{
     border-style:none;
     border-radius: 10px;
     color:black;
+    margi
+}
+#Bcopy.options {
+    margin-left:5px;
 }
 .btn.options:hover:enabled {
     color: inherit;
