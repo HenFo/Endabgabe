@@ -59,9 +59,15 @@
     border: 2px solid #e6e6e6;
     border-radius: 10px;
     padding: 3px 5px;
+    margin-bottom:10px;
 }
-h3 {
-    font-weight:bolder;
+h3, h2{
+    font-size:15px;
+    font-weight:bold;
+    margin-left: 5px;
+}
+.editingOptions {
+    margin-top: 10px;
 }
 .options {
     background-color: #b3e6ff;
@@ -106,11 +112,13 @@ aside button {
 aside button:hover {
     color:inherit;
 }
-table {
+.table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
-    width: 100%;
+    width: 90%;
+    margin:auto;
 }
+
 td, th {
     border: 1px solid #dddddd;
     text-align: left;
@@ -163,10 +171,29 @@ tr.tableEmpty {
     left:1px;
     top:0px;
 }
+#InstituteTable {
+    border-top: 1px solid gainsboro;
+    padding-left: 20px;
+    padding-top: 10px;
+    margin-top: 5px;
+    font-size: 16px;
+}
+    #InstituteTable:hover {
+        cursor:pointer;
+        font-size: 18px;
+
+    }
+li.instList:not(:last-child) {
+    margin-bottom:10px;
+}
+.a-edit {
+    margin-left:25px;
+    color:black;
+}
 @media only screen and (max-width: 450px) {
     .leaflet-routing-container.leaflet-bar.leaflet-control {
-        overflow:auto;
-    }
+    overflow:auto;
+}
 }
 @media only screen and (max-width: 575px) {
     .btn.orange {
@@ -184,6 +211,14 @@ tr.tableEmpty {
     }
     .navbar-toggler {
         margin-right:20px;
+    }
+    .itemColum {
+        border-right:hidden;
+    }
+}
+@media only screen and (max-width: 990px) {
+    .table {
+        width:100%;
     }
 }
 

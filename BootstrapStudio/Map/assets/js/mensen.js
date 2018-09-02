@@ -99,7 +99,7 @@ function getMeal(pMensa) {
             Mensen.addLayer(L.marker(pMensa.coordinaten).addTo(map).bindPopup("<h5>" + pMensa.name + "</h5>" + popUp + "<br/><button class='btn popup' onclick='toDestination(" + pMensa.coordinaten + ")'>Zu dieser Mensa navigieren</button>"));
         },
         error: function (xhr) {
-            Mensen.addLayer(L.marker(pMensa.coordinaten).addTo(map).bindPopup("hier ist die Mensa " + pMensa.name + "<br/> Keine Daten zu den Gerichten <br/><button class='btn popup' onclick='toDestination(" + pMensa.coordinaten + ")'>Zu dieser Mensa navigieren</button>"));
+            Mensen.addLayer(L.marker(pMensa.coordinaten).addTo(map).bindPopup("<h5>" + pMensa.name + "</h5><table><tr><td>Keine Daten zu den Gerichten</td></tr></table> <br/><button class='btn popup' onclick='toDestination(" + pMensa.coordinaten + ")'>Zu dieser Mensa navigieren</button>"));
             //console.log("kein Gericht gefunden");
         }
     });

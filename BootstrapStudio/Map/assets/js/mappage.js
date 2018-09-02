@@ -22,7 +22,6 @@ var Fachbereiche = L.featureGroup().addTo(map);
 L.control.layers(null, {
     'Institute': Institute,
     'Mensen': Mensen,
-    'Fachbereiche': Fachbereiche
 }, { position: 'topleft', collapsed: false }).addTo(map);
 
 //Fullscreen Option
@@ -85,7 +84,7 @@ function routeToNextMensa() {
         control.spliceWaypoints(control.getWaypoints().length - 1, 1, { lat: mensa.lat, lng: mensa.lng });
         control.show();
     } else try {
-        var mensa = nextMensa(latestPosition.latlng); //sammeln der noetigen Informationen
+        var mensa = nextMensa(control.getWaypoints()[0].latLng); //sammeln der noetigen Informationen
         control.spliceWaypoints(control.getWaypoints().length - 1, 1, { lat: mensa.lat, lng: mensa.lng });
         control.show();
     } catch(e) {
@@ -109,7 +108,6 @@ function toDestination(pLat, pLng) {
         control.show();
     } else {
         control.spliceWaypoints(control.getWaypoints().length - 1, 1, { lat: pLat, lng: pLng });
-        control.show();
     }
 }
 
