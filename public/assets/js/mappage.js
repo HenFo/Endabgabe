@@ -26,10 +26,10 @@ L.control.layers(null, {
 
 //Fullscreen Option
 map.addControl(new L.Control.Fullscreen().setPosition("topright"));
-L.control.layers(null,{
+L.control.layers({
     "outdoor": outdor.addTo(map),
     "satellite": satellite,
-}, { position: 'topright' }).addTo(map);
+},null, { position: 'topright' }).addTo(map);
 
 var control = L.Routing.control({
     router: L.routing.mapbox(accessToken),
