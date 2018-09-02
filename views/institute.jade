@@ -23,15 +23,15 @@ html
         #navcol-1.collapse.navbar-collapse
           ul.nav.navbar-nav.ml-auto
             li.nav-item(role='presentation')
-              a.nav-link(href='index.jade') Karte
+              a.nav-link(href='/index') Karte
             li.nav-item(role='presentation')
-              a.nav-link(href='institute.jade') Institute
+              a.nav-link(href='/institute/index') Institute
             li.nav-item(role='presentation')
-              a.nav-link(href='mensen.jade') Mensen
+              a.nav-link(href='/mensen/index') Mensen
             li.nav-item(role='presentation')
-              a.nav-link(href='fachbereich.jade') Fachbereiche
+              a.nav-link(href='/fachbereich/index') Fachbereiche
             li.nav-item(role='presentation')
-              a.nav-link(href='editMap.jade') Edit map
+              a.nav-link(href='/editMap/index') Edit map
     main.page.pricing-table-page
       .container-fluid
         .row(style='padding-left:10px')
@@ -39,9 +39,9 @@ html
             #Umgebung.gps
               #institute
                 h2.editingOptions Institute:
-                a.a-edit(href='createInstitut.jade') Add Institut
+                a.a-edit(href='/createInstitut/institute') Add Institut
                 br
-                a.a-edit(href='editInstitut.jade') Edit Institute
+                a.a-edit(href='/editInstitut/institute') Edit Institute
                 br
                 // <table id="InstituteTable" class="table"></table>
                 ul#InstituteTable
