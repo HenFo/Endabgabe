@@ -45,12 +45,17 @@ router.get('/createInstitut/institute', function (req, res) {
 })
 
 router.get('/editFachbereich/fachbereich', function (req, res) {
-    res.render('createFachbereich', { title: 'Bearbeite ein Fachbereich' });
+    res.render('editFachbereich', { title: 'Bearbeite ein Fachbereich' });
 })
 
 router.get('/editInstitut/institute', function (req, res) {
-    res.render('createInstitut', { title: 'Bearbeite ein Institut' });
-})
+    var db = req.db;
+    var collection = db.get('fachbereiche');
+    collection.find({}, {}, function (e, docs) {
+        if (e) { res.render('editInstitut', { title: 'Bearbeite ein Institut' }); } else {
+            res.render('editInstitut', { title: 'Bearbeite ein Institut', "fachbereiche": docs });
+        }
+    });})
 
 router.get('/getAllFachbereiche', function (req, res) {
     var db = req.db;
@@ -186,6 +191,19 @@ router.post('/findRoute', function (req, res) {
     collection.find(document, {}, function (e, docs) {
         if (e) JL().fatal(e); else {
             res.send(docs);
+        }
+    });
+})
+
+router.post('/deleteRoute', function (req, res) {
+    var db = req.db;
+    var document = req.body;
+    var collection = db.get('routen');
+    collection.remove(document, function (err, obj) {
+        if (err) JL().fatal(err); else {
+            JL().debug(document);
+            res.send(obj);
+            db.close();
         }
     });
 })

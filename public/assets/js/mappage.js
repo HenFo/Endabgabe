@@ -204,7 +204,6 @@ function findFachbereich(pName) {
         data: data,
         url: "/findFachbereich",
         success: function (data) {
-            console.log("Fachbereich " + data)
             generateList(data, 1);
         },
         error: function (xhr) {
@@ -219,7 +218,6 @@ function findRoute(pName) {
         data: { "name": pName },
         url: "/findRoute",
         success: function (data) {
-            console.log("Routen " + data)
             generateList(data, 2);
         },
         error: function (xhr) {
@@ -264,14 +262,33 @@ function generateList(data, type) {
             break;
         case 2: //routen
             var waypoints = { "start": data[0].start, "ziel": data[0].ziel };
+            var name = { "name": data[0].name };
+            name = JSON.stringify(name);
             waypoints = JSON.stringify(waypoints);
-            html += "<li class='lists' onclick='showOnMap(" + waypoints + ")'>" + data[0].name + "</li>";
+            html += "<li class='lists' onclick='showOnMap(" + waypoints + ")'>" + data[0].name + "<button class='routeEdit' onclick='deleteRoute(" + name + ")'><i class='fa fa-trash-o'></i></button><button class='routeEdit' onclick='editRoute(" + name+")'><i class='fa fa-pencil'></i></button></li>";
             document.getElementById("searchTable").innerHTML += html;
             break;
         case 3: //mensen
             html += "<li class='lists' onclick='openMensaPopup(" + data.index + ")'>" + data.mensa.name + "</li>";
             document.getElementById("searchTable").innerHTML += html;
 
+    }
+}
+
+function deleteRoute(pRoutenName) {
+    if (confirm("Route sicher loeschen?!")) {
+        $.ajax({
+            type: 'POST',
+            data: pRoutenName,
+            url: "/deleteRoute",
+            success: function (data) {
+                alert("Route " + pRoutenName.name + " wurde geloescht!");
+                location.reload();
+            },
+            error: function (xhr) {
+                alert("Fehler beim loeschen der Route");
+            }
+        });
     }
 }
 
@@ -313,12 +330,10 @@ $(document).ready(function () {
 
 
 function saveRoute() {
-    console.log(document.getElementById("routeName").value);
     var name = document.getElementById("routeName").value;
     var start = {
         "lat": control.getWaypoints()[0].latLng.lat, "lng": control.getWaypoints()[0].latLng.lng
     };
-    console.log(start);
     var ziel = {
         "lat": control.getWaypoints()[control.getWaypoints().length - 1].latLng.lat, "lng": control.getWaypoints()[control.getWaypoints().length - 1].latLng.lng
     };
@@ -326,7 +341,6 @@ function saveRoute() {
     object = object.toJSON();
     object = JSON.stringify(object);
     object = { "type": "route", "data": object };
-    console.log(object);
     $.ajax({
         type: 'POST',
         data: object,
@@ -334,7 +348,6 @@ function saveRoute() {
         success: function () {
             alert('Route gespeichert');
             autoArr.splice(autoArrDist.routen, 0, name);
-            console.log(autoArr);
             autoArrDist.routen++;
             autoArrDist.fachbereiche++;
             autoArrDist.mensen++;
@@ -414,7 +427,6 @@ function checkRoute() {
 function toDestination(pLat, pLng) {
     if (latestPosition != null) {
         control.spliceWaypoints(0, 1, latestPosition.latlng);
-        //console.log(pLat, pLng);
         control.spliceWaypoints(control.getWaypoints().length - 1, 1, { lat: pLat, lng: pLng });
         control.show();
     } else {
