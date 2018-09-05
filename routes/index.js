@@ -76,7 +76,6 @@ router.get('/getAllRoutes', function (req, res) {
     });
 })
 
-
 router.post('/addFachbereich', function (req, res) {
     var db = req.db;
     var document = req.body;
@@ -126,7 +125,8 @@ router.post('/addInstitutInFachbereich', function (req, res) {
             JL().debug(institute);
             institute.push(data);
             JL().debug(institute);
-            db.collection('fachbereiche').update({ "abkuerzung": hFachbereich }, { $set: { "institute": institute }, function(err, result) {
+            db.collection('fachbereiche').update({ "abkuerzung": hFachbereich }, {
+                $set: { "institute": institute }, function(err, result) {
                     if (err) {
                         JL().debug("4.5");
                         JL().debug(err);
@@ -143,12 +143,49 @@ router.post('/addInstitutInFachbereich', function (req, res) {
 
 router.post('/addRoute', function (req, res) {
     var db = req.db;
-    var document = req.body;
+    var document = req.body.data;
+    document = JSON.parse(document);
+    JL().debug(document);
     db.collection('routen').insert(document, function (err, result) {
         if (err) {
 
         } else {
             res.send(document);
+        }
+    });
+})
+
+router.post('/findInstitut', function (req, res) {
+    var db = req.db;
+    var document = req.body;
+    var collection = db.get('institute');
+    collection.find(document, {}, function (e, docs) {
+        if (e) JL().fatal(e); else {
+            res.send(docs);
+        }
+    });
+})
+
+router.post('/findFachbereich', function (req, res) {
+    var db = req.db;
+    var document = req.body;
+    JL().debug(document);
+    var collection = db.get('fachbereiche');
+    collection.find(document, {}, function (e, docs) {
+        if (e) JL().fatal(e); else {
+            JL().debug(docs);
+            res.send(docs);
+        }
+    });
+})
+
+router.post('/findRoute', function (req, res) {
+    var db = req.db;
+    var document = req.body;
+    var collection = db.get('routen');
+    collection.find(document, {}, function (e, docs) {
+        if (e) JL().fatal(e); else {
+            res.send(docs);
         }
     });
 })

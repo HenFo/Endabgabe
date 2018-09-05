@@ -49,22 +49,19 @@ class Gericht {
 }
 
 var mensen = [];
+var gerichte = [];
+var mensenPopup = [];
 function getMensen() {
     $.ajax({
         type: "GET",
         url: "https://openmensa.org/api/v2/canteens/?near[lat]=51.96&near[lng]=7.63",
         success: function (data) {
             for (var i = 0; i < data.length; i++) {
-                mensen.push(new Mensa(data[i].id, data[i].name, data[i].coordinates));
-                try {
-                    autoArr.push(data[i].name);
-                } catch (e) {}
+                var hMensa = new Mensa(data[i].id, data[i].name, data[i].coordinates);
+                getMeal(hMensa);
             }
-            //console.log(mensen);
-            for (var i = 0; i < mensen.length; i++) {
-                getMeal(mensen[i]);
-            }
-            //console.log(mensen);
+            autoArrDist.mensen = data.length + autoArrDist.fachbereiche;
+
         },
         error: function (xhr) {
             alert(xhr.statusText);
@@ -95,13 +92,27 @@ function getMeal(pMensa) {
             }
             //console.log(hGerichte);
             var popUp = generatePopUp(hGerichte);
-            Mensen.addLayer(L.marker(pMensa.coordinaten).addTo(map).bindPopup("<h5>" + pMensa.name + "</h5>" + popUp + "<br/><button class='btn popup' onclick='toDestination(" + pMensa.coordinaten + ")'>Zu dieser Mensa navigieren</button>"));
+            var marker = L.marker(pMensa.coordinaten).addTo(map).bindPopup("<h5>" + pMensa.name + "</h5>" + popUp + "<br/><button class='btn popup' onclick='toDestination(" + pMensa.coordinaten + ")'>Zu dieser Mensa navigieren</button>");
+            Mensen.addLayer(marker);
+            mensenPopup.push(marker);
+            mensen.push(pMensa);
+            autoArr.push(pMensa.name);
+            console.log(pMensa.name);
         },
         error: function (xhr) {
-            Mensen.addLayer(L.marker(pMensa.coordinaten).addTo(map).bindPopup("<h5>" + pMensa.name + "</h5><table><tr><td>Keine Daten zu den Gerichten</td></tr></table> <br/><button class='btn popup' onclick='toDestination(" + pMensa.coordinaten + ")'>Zu dieser Mensa navigieren</button>"));
+            var marker = L.marker(pMensa.coordinaten).addTo(map).bindPopup("<h5>" + pMensa.name + "</h5><table><tr><td>Keine Daten zu den Gerichten</td></tr></table> <br/><button class='btn popup' onclick='toDestination(" + pMensa.coordinaten + ")'>Zu dieser Mensa navigieren</button>");
+            Mensen.addLayer(marker);
+            mensenPopup.push(marker);
+            mensen.push(pMensa);
+            autoArr.push(pMensa.name);
+            console.log(pMensa.name);
             //console.log("kein Gericht gefunden");
         }
     });
+}
+
+function openMensaPopup(pID) {
+    mensenPopup[pID].openPopup();
 }
 
 /**
@@ -111,7 +122,7 @@ function getMeal(pMensa) {
 function generatePopUp(pGericht) { //navigation hinzufuegen
     var str = "";
     for (var i = 0; i < pGericht.length; i++) {
-        str = str + "<tr><td>" + pGericht[i].name + "</td><td><table><tr><th>Studenten</th><th>Angestellte</th><th>Sonstige</th></tr><tr><td>" + pGericht[i].preise.students + "&euro;</td><td>" + pGericht[i].preise.employees + "&euro;</td><td>" + pGericht[i].preise.others +"&euro;</td></tr></table></td></tr>";
+        str = str + "<tr><td>" + pGericht[i].name + "</td><td><table><tr><th>Studenten</th><th>Angestellte</th><th>Sonstige</th></tr><tr><td>" + pGericht[i].preise.students + "&euro;</td><td>" + pGericht[i].preise.employees + "&euro;</td><td>" + pGericht[i].preise.others + "&euro;</td></tr></table></td></tr>";
 
     }
     return "<table><tr><th>Gericht</th><th>Preis</th></tr>" + str + "</table>";

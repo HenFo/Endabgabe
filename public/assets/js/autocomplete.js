@@ -1,3 +1,9 @@
+/**
+ * Autocomplete fuer die Suche
+ * @see https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_autocomplete
+ * @param {any} inp Inputfeld/Suchfeld
+ * @param {Array} arr Array mit den moeglichen Werten fuer die verfollstaendigung
+ */
 function autocomplete(inp, arr) {
     /*the autocomplete function takes two arguments,
     the text field element and an array of possible autocompleted values:*/

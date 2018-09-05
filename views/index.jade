@@ -50,11 +50,17 @@ html
                 | Orte mich! 
                 i.fa.fa-crosshairs
               button.btn.orange(type='button', style='margin-top:10px', onclick='routeToNextMensa()') zur naechsten Mensa
-              button#routeButton.btn.route(type='button', style='margin-top:10px') aktuelle Route speichern
+              button#routeButton.btn.route(type='button') aktuelle Route speichern
               input#routeName.textfeld.search(type="text" placeholder="Name der Route" name="Routenname" style='display:none')
+              #routeButtons
+                button#routeEdit.btn.routeEdit(type='button') Route aktualisieren
+                button#routeDelete.btn.routeEdit(type='button') Route 
+                  i.fa.fa-trash-o
               .searchSection.autocomplete
                 input#searchInput.textfeld.search(type="text" placeholder="Search.." name="search" autocomplete="off")
-                input#submitSearch.submit(type='button' value='Suchen') 
+                button#submitSearch.submit(type='button' value='Suchen')
+                  i.fa.fa-search
+              ul#searchTable
           .col-sm-9.mapCol
             #map.map
     footer.page-footer.dark(style='padding-top: 10px;')

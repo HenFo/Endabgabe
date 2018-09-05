@@ -128,7 +128,7 @@ function createPopup(pName, pFach, pBild) {
  * @param {JSON} pInstitut Institut, dessen Informationen in eine Tabelle uebertragen werden
  */
 function generateHtml(pInstitut, pID) {
-    var str = "<li class='instList' onclick='openInformation(" +pID+ ")'>" + pInstitut.features[0].properties.name + " aus " + pInstitut.features[0].properties.fachbereich + "</li>";
+    var str = "<li class='lists' onclick='openInformation(" +pID+ ")'>" + pInstitut.features[0].properties.name + " aus " + pInstitut.features[0].properties.fachbereich + "</li>";
     return str;
 }
 

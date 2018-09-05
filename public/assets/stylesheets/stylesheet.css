@@ -2,35 +2,42 @@
     box-shadow: 1px 0px 15px;
     padding: 9px 0px;
 }
+
 .navbar {
     padding: 10px 0px;
 }
-a:active{
+
+a:active {
     font-weight: bold;
     color: black;
 }
+
 .page {
     margin: 20px 0px;
 }
+
 .itemColum {
     border-right: solid;
     border-right-color: gainsboro;
 }
+
 .red {
-    color:white;
+    color: white;
     background-color: red;
     border-color: inherit;
     width: 100%;
-    margin:auto;
-    border-radius:10px;
-    height:60px;
+    margin: auto;
+    border-radius: 10px;
+    height: 60px;
 }
+
 .btn.red:hover {
-    color:white;
+    color: white;
 }
+
 .mapCol {
-    
 }
+
 .map {
     width: 100%;
     height: 600px;
@@ -38,9 +45,11 @@ a:active{
     margin: auto;
     border-radius: 5px;
 }
+
 .page-footer {
     padding-top: 0px;
 }
+
 .footer-copyright {
     margin-top: 5px;
 }
@@ -48,78 +57,95 @@ a:active{
     margin-top: 15px;
 }*/
 .btn.edit:hover {
-    color:inherit;
+    color: inherit;
 }
+
 .listEditOption {
     margin-left: 30px;
-    display:none;
+    display: none;
 }
+
 .textfeld {
     width: auto;
     border: 2px solid #e6e6e6;
     border-radius: 10px;
     padding: 3px 5px;
-    margin-bottom:10px;
+    margin-bottom: 10px;
 }
-h3, h2{
-    font-size:15px;
-    font-weight:bold;
+
+h3, h2 {
+    font-size: 15px;
+    font-weight: bold;
     margin-left: 5px;
 }
+
 .editingOptions {
     margin-top: 10px;
 }
+
 .options {
     background-color: #b3e6ff;
-    border-style:none;
+    border-style: none;
     border-radius: 10px;
-    color:black;
+    color: black;
 }
+
 #Bcopy.options {
-    margin-left:5px;
+    margin-left: 5px;
 }
+
 .btn.options:hover:enabled {
     color: inherit;
     background-color: #66ccff;
 }
+
 .btn:hover {
-    color:inherit;
+    color: inherit;
 }
+
 .btn:disabled {
-    cursor:not-allowed;
+    cursor: not-allowed;
 }
+
 .institutForm {
     margin-bottom: 20px;
 }
+
 textarea.geoJSON {
     display: none;
-    height:300px;
-    width:300px;
+    height: 300px;
+    width: 300px;
 }
+
 button.green {
     background-color: #41c653;
-    border-style:none;
-    border-radius:10px;
+    border-style: none;
+    border-radius: 10px;
     color: white;
 }
+
     button.green:hover {
         color: white;
         background-color: #37a846;
     }
+
 .noDisplay {
-    display:none;
+    display: none;
 }
+
 aside button {
-    color:inherit;
+    color: inherit;
 }
-aside button:hover {
-    color:inherit;
-}
+
+    aside button:hover {
+        color: inherit;
+    }
+
 .table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
     width: 90%;
-    margin:auto;
+    margin: auto;
 }
 
 td, th {
@@ -127,10 +153,12 @@ td, th {
     text-align: left;
     padding: 8px;
 }
+
 tr.tableEmpty {
     background-color: #dddddd;
     opacity: 0.6;
 }
+
 .popup {
     margin: auto;
     border: hidden;
@@ -139,20 +167,24 @@ tr.tableEmpty {
     color: white;
     width: 100%;
 }
+
     .popup:hover {
         background-color: #009933;
-        color:white;
+        color: white;
     }
+
 .gps {
-    width:auto;
-    margin:auto;
+    width: auto;
+    margin: auto;
 }
+
 .navigation {
-    width:auto;
-    margin:5px;
+    width: auto;
+    margin: 5px;
 }
+
 .orange {
-    height:60px;
+    height: 60px;
     margin: auto;
     border: hidden;
     background-color: #ff8c1a;
@@ -160,14 +192,16 @@ tr.tableEmpty {
     color: white;
     width: 100%;
     padding: 7px 5px;
-    
 }
-.orange:hover {
-    color:white;
-}
+
+    .orange:hover {
+        color: white;
+    }
+
 .route {
     height: 60px;
     margin: auto;
+    margin-top: 10px;
     border: hidden;
     background-color: #e6b800;
     border-radius: 10px;
@@ -175,34 +209,41 @@ tr.tableEmpty {
     width: 100%;
     padding: 7px 5px;
 }
-.route:hover {
-    color:white;
-}
+
+    .route:hover {
+        color: white;
+    }
+
 .btn:not(.popup) {
     word-wrap: break-word !important;
     white-space: normal !important;
 }
+
 .scrollDown {
-    border-radius:100%;
-    border:1px solid black;
-    background-color:white;
-    height:30px;
-    width:30px;
-    text-align:center;
+    border-radius: 100%;
+    border: 1px solid black;
+    background-color: white;
+    height: 30px;
+    width: 30px;
+    text-align: center;
 }
+
 .iconPos {
-   position:relative;
-   right:4.5px;
-   bottom:4px;
+    position: relative;
+    right: 4.5px;
+    bottom: 4px;
 }
+
 .leaflet-popup-content-wrapper {
-    max-width:490px;
-    overflow:auto;
+    max-width: 490px;
+    overflow: auto;
 }
+
 .leaflet-routing-container-hide .leaflet-routing-collapse-btn {
-    left:1px;
-    top:0px;
+    left: 1px;
+    top: 0px;
 }
+
 #InstituteTable {
     border-top: 1px solid gainsboro;
     padding-left: 20px;
@@ -210,37 +251,59 @@ tr.tableEmpty {
     margin-top: 5px;
     font-size: 16px;
 }
-    #InstituteTable:hover {
-        cursor:pointer;
-        font-size: 18px;
 
+    #InstituteTable:hover {
+        cursor: pointer;
     }
+
 li.instList:not(:last-child) {
-    margin-bottom:10px;
+    margin-bottom: 10px;
 }
+
+#searchTable {
+    display: none;
+    border-top: none;
+    padding-left: 20px;
+    margin-top: 5px;
+    font-size: 16px;
+}
+
+.lists:hover {
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.lists, .fachSearchList {
+    border-bottom: 1px solid #f1f1f1;
+}
+
 .a-edit {
-    margin-left:25px;
-    color:black;
+    margin-left: 25px;
+    color: black;
 }
+
 .tableFachInst {
     display: none;
     background-color: #f2f2f2;
 }
+
 .search {
     display: block;
     text-align: left;
-    width: 65%;
+    width: 80%;
     background-color: #f1f1f1;
     border-radius: 0%;
     margin-top: 10px;
     float: left;
     border: 1px solid transparent;
 }
+
 .searchSection {
     margin-top: 10px;
     border-top: 1px solid gainsboro;
-    width:100%;
+    width: 100%;
 }
+
 .submit {
     margin-top: 10px;
     float: right;
@@ -249,39 +312,94 @@ li.instList:not(:last-child) {
     color: #fff;
     cursor: pointer;
     border: 1px solid transparent;
-    width:35%;
+    width: 20%;
 }
 
+.searchtype {
+    margin-bottom: 0px;
+    margin-top: 10px;
+    width: 100%;
+}
+
+#routeName.textfeld.search {
+    width: 100%;
+    margin-bottom: 0px;
+    border: 1px solid gainsboro;
+    border-radius: 10px;
+}
+
+.routeEdit {
+    background-color: #ff5050;
+    width: 49%;
+    color: white;
+    margin: 10px 1px  0px;
+    height:60px;
+}
+
+    .routeEdit:hover {
+        color: white;
+    }
 
 @media only screen and (max-width: 450px) {
     .leaflet-routing-container.leaflet-bar.leaflet-control {
-    overflow:auto;
+        overflow: auto;
+    }
 }
-}
+
 @media only screen and (max-width: 575px) {
     .btn.orange {
-        width:49%;
-        margin-bottom:10px;
-        height:60px;
+        width: 50%;
+        margin-bottom: 10px;
+        height: 60px;
     }
+
     .btn.red {
-        width:49%;
-        height:60px;
+        width: 50%;
+        height: 60px;
     }
+
     .logo {
-        margin-right:0px;
+        margin-right: 0px;
         margin-left: 20px;
     }
+
     .navbar-toggler {
-        margin-right:20px;
+        margin-right: 20px;
     }
+
     .itemColum {
-        border-right:hidden;
+        border-right: hidden;
     }
+
+    .route {
+        margin-top: 0px;
+    }
+
+    .searchSection {
+        width: 100%;
+    }
+
+    .submit {
+        width: 15%;
+    }
+
+    .search {
+        width: 85%;
+        float: left;
+    }
+
+    .row {
+        position: relative;
+    }
+    /*.searchtype {
+        width: 30%;
+        float:right;
+    }*/
 }
+
 @media only screen and (max-width: 990px) {
     .table {
-        width:100%;
+        width: 100%;
     }
 }
 
@@ -323,5 +441,3 @@ li.instList:not(:last-child) {
     background-color: DodgerBlue !important;
     color: #ffffff;
 }
-
-
