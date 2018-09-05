@@ -143,7 +143,9 @@ router.post('/addInstitutInFachbereich', function (req, res) {
 
 router.post('/addRoute', function (req, res) {
     var db = req.db;
-    var document = req.body;
+    var document = req.body.data;
+    document = JSON.parse(document);
+    JL().debug(document);
     db.collection('routen').insert(document, function (err, result) {
         if (err) {
 
@@ -156,9 +158,8 @@ router.post('/addRoute', function (req, res) {
 router.post('/findInstitut', function (req, res) {
     var db = req.db;
     var document = req.body;
-    var hInst = document.name;
     var collection = db.get('institute');
-    collection.find({ hInst }, {}, function (e, docs) {
+    collection.find(document, {}, function (e, docs) {
         if (e) JL().fatal(e); else {
             res.send(docs);
         }
@@ -181,9 +182,8 @@ router.post('/findFachbereich', function (req, res) {
 router.post('/findRoute', function (req, res) {
     var db = req.db;
     var document = req.body;
-    var hRoute = document.name;
     var collection = db.get('routen');
-    collection.find({ hRoute }, {}, function (e, docs) {
+    collection.find(document, {}, function (e, docs) {
         if (e) JL().fatal(e); else {
             res.send(docs);
         }

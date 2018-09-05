@@ -270,6 +270,9 @@ li.instList:not(:last-child) {
     margin-top:10px;
     width:100%;
 }
+#routeName.textfeld.search {
+    width:100%;
+}
 
 @media only screen and (max-width: 450px) {
     .leaflet-routing-container.leaflet-bar.leaflet-control {

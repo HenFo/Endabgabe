@@ -140,12 +140,12 @@ window.onload = function () {
 
 }
 
-$(document).ajaxStop(function () {
-    console.log(autoArrDist);
-    console.log(autoArr);
-    console.log(mensenPopup);
-    mensenPopup[4].openPopup();
-});
+//$(document).ajaxStop(function () {
+//    console.log(autoArrDist);
+//    console.log(autoArr);
+//    console.log(mensenPopup);
+//    mensenPopup[4].openPopup();
+//});
 
 $(document).ready(function () {
     $("#submitSearch").click(function () {
@@ -220,7 +220,7 @@ function findRoute(pName) {
         url: "/findRoute",
         success: function (data) {
             console.log("Routen " + data)
-            generateRoute(data, 2);
+            generateList(data, 2);
         },
         error: function (xhr) {
 
@@ -241,9 +241,9 @@ function openInformation(pID) {
     institutPopups[pID].openPopup();
 }
 
-function showOnMap(data) {
-    control.spliceWaypoints(0, 1, data[0].start);
-    control.spliceWaypoints(control.getWaypoints().length - 1, 1, data[0].ziel);
+function showOnMap(pData) {   
+    control.spliceWaypoints(0, 1, pData.start);
+    control.spliceWaypoints(control.getWaypoints().length - 1, 1, pData.ziel);
 }
 
 function generateList(data, type) {
@@ -262,7 +262,9 @@ function generateList(data, type) {
             document.getElementById("searchTable").innerHTML += html + "</li>";
             break;
         case 2: //routen
-            html += "<li class='lists' onclick='showOnMap(" + data[0] + ")'>" + data[0].name + "</li>";
+            var waypoints = { "start": data[0].start, "ziel": data[0].ziel };
+            waypoints = JSON.stringify(waypoints);
+            html += "<li class='lists' onclick='showOnMap(" + waypoints + ")'>" + data[0].name + "</li>";
             document.getElementById("searchTable").innerHTML += html;
             break;
         case 3: //mensen
@@ -270,9 +272,6 @@ function generateList(data, type) {
             document.getElementById("searchTable").innerHTML += html;
 
     }
-
-
-
 }
 
 /**
@@ -314,10 +313,17 @@ $(document).ready(function () {
 function saveRoute() {
     console.log(document.getElementById("routeName").value);
     var name = document.getElementById("routeName").value;
-    var start = control.getWaypoints()[0].latLng;
-    var ziel = control.getWaypoints()[control.getWaypoints().length - 1].latLng;
-    var object = new Rout(name, start, ziel);
+    var start = {
+        "lat": control.getWaypoints()[0].latLng.lat, "lng": control.getWaypoints()[0].latLng.lng
+    };
+    console.log(start);
+    var ziel = {
+        "lat": control.getWaypoints()[control.getWaypoints().length - 1].latLng.lat, "lng": control.getWaypoints()[control.getWaypoints().length - 1].latLng.lng
+    };
+    var object = new Route(name, start, ziel);
     object = object.toJSON();
+    object = JSON.stringify(object);
+    object = { "type": "route", "data": object };
     console.log(object);
     $.ajax({
         type: 'POST',
@@ -325,6 +331,11 @@ function saveRoute() {
         url: "/addRoute",
         success: function () {
             alert('Route gespeichert');
+            autoArr.splice(autoArrDist.routen, 0, name);
+            console.log(autoArr);
+            autoArrDist.routen++;
+            autoArrDist.fachbereiche++;
+            autoArrDist.mensen++;
         },
         error: function () {
             alert('Speichern fehlgeschlagen');
