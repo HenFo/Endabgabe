@@ -57,14 +57,9 @@ function getMensen() {
         url: "https://openmensa.org/api/v2/canteens/?near[lat]=51.96&near[lng]=7.63",
         success: function (data) {
             for (var i = 0; i < data.length; i++) {
-                mensen.push(new Mensa(data[i].id, data[i].name, data[i].coordinates));
-                autoArr.push(data[i].name);
+                var hMensa = new Mensa(data[i].id, data[i].name, data[i].coordinates);
+                getMeal(hMensa);
             }
-            //console.log(mensen);
-            for (var i = 0; i < mensen.length; i++) {
-                getMeal(mensen[i]);
-            }
-            //console.log(mensen);
             autoArrDist.mensen = data.length + autoArrDist.fachbereiche;
 
         },
@@ -94,20 +89,22 @@ function getMeal(pMensa) {
             for (var j = 0; j < data.length; j++) {
                 var gericht = new Gericht(data[j].id, pMensa.name, data[j].name, data[j].prices);
                 hGerichte.push(gericht);
-                gerichte.push(gericht);
             }
             //console.log(hGerichte);
             var popUp = generatePopUp(hGerichte);
             var marker = L.marker(pMensa.coordinaten).addTo(map).bindPopup("<h5>" + pMensa.name + "</h5>" + popUp + "<br/><button class='btn popup' onclick='toDestination(" + pMensa.coordinaten + ")'>Zu dieser Mensa navigieren</button>");
             Mensen.addLayer(marker);
             mensenPopup.push(marker);
-
+            mensen.push(pMensa);
+            autoArr.push(pMensa.name);
             console.log(pMensa.name);
         },
         error: function (xhr) {
             var marker = L.marker(pMensa.coordinaten).addTo(map).bindPopup("<h5>" + pMensa.name + "</h5><table><tr><td>Keine Daten zu den Gerichten</td></tr></table> <br/><button class='btn popup' onclick='toDestination(" + pMensa.coordinaten + ")'>Zu dieser Mensa navigieren</button>");
             Mensen.addLayer(marker);
             mensenPopup.push(marker);
+            mensen.push(pMensa);
+            autoArr.push(pMensa.name);
             console.log(pMensa.name);
             //console.log("kein Gericht gefunden");
         }
