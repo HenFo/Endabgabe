@@ -48,18 +48,17 @@ class Gericht {
     }
 }
 
-window.onload = function () {
-    getMensen();
-}
-
 var mensen = [];
 function getMensen() {
     $.ajax({
-        url: "https://openmensa.org/api/v2/canteens/?near[lat]=51.96&near[lng]=7.63",
         type: "GET",
+        url: "https://openmensa.org/api/v2/canteens/?near[lat]=51.96&near[lng]=7.63",
         success: function (data) {
             for (var i = 0; i < data.length; i++) {
                 mensen.push(new Mensa(data[i].id, data[i].name, data[i].coordinates));
+                try {
+                    autoArr.push(data[i].name);
+                } catch (e) {}
             }
             //console.log(mensen);
             for (var i = 0; i < mensen.length; i++) {
@@ -87,8 +86,8 @@ function getMeal(pMensa) {
 
     var hGerichte = [];
     $.ajax({
-        url: "https://openmensa.org/api/v2/canteens/" + pMensa.id + "/days/" + hHeute + "/meals",
         type: "GET",
+        url: "https://openmensa.org/api/v2/canteens/" + pMensa.id + "/days/" + hHeute + "/meals",
         success: function (data) {
             for (var j = 0; j < data.length; j++) {
                 var gericht = new Gericht(data[j].id, pMensa.name, data[j].name, data[j].prices);

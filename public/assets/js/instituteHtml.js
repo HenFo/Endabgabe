@@ -70,67 +70,47 @@ map.on('click', function (e) {
 
 //////////////////////////////////////////////////////////////
 
+var instituteArr = [];
+function getAllIbstitutes() {
+    $.ajax({
+        type: 'GET',
+        url: "/getAllInstitutes",
+        success: function () {
 
-var instituteArr = [{
-    "type": "FeatureCollection",
-    "features": [
-        {
-            "type": "Feature",
-            "properties": {
-                "name": "Geo1",
-                "fachbereich": "FB14",
-                "image": "https://www.eternit.de/referenzen/media/catalog/product/cache/2/image/890x520/9df78eab33525d08d6e5fb8d27136e95/g/e/geo1_institut_muenster_01.jpg"
-            },
-            "geometry": {
-                "type": "Polygon",
-                "coordinates": [
-                    [
-                        [
-                            51.96966694957956,
-                            7.5955116748809814
-                        ],
-                        [
-                            51.969290189054426,
-                            7.595369517803192
-                        ],
-                        [
-                            51.96921252311378,
-                            7.595951557159424
-                        ],
-                        [
-                            51.969587631837484,
-                            7.5960856676101685
-                        ],
-                        [
-                            51.96966694957956,
-                            7.5955116748809814
-                        ]
-                    ]
-                ]
-            }
+        },
+        error: function () {
+            alert('fehler beim laden der Institute');
         }
-    ]
-}];
+    });
+}
 
 var institutPopups = [];
-
 /**
  * Startet sobald die Seite aufgerufen wird
  */
 window.onload = function () {
-    var html = "";
-    for (var i = 0; i < instituteArr.length; i++) {
-        var name = instituteArr[i].features[0].properties.name;
-        var fach = instituteArr[i].features[0].properties.fachbereich;
-        var img = instituteArr[i].features[0].properties.image;
-        var polygon = L.polygon(instituteArr[i].features[0].geometry.coordinates, {}).addTo(map).bindPopup(createPopup(name, fach, img));
-        //console.log(polygon._leaflet_id);
-        Institute.addLayer(polygon);
-        institutPopups.push(polygon);
-        //map.fitBounds(polygon.getBounds());
-        html += generateHtml(instituteArr[i], i);
-    }
-    document.getElementById("InstituteTable").innerHTML = html;
+    $.ajax({
+        type: 'GET',
+        url: "/getAllInstitutes",
+        success: function (data) {
+            var html = "";
+            for (var x in data) {
+                var name = data[x].data.features[0].properties.name;
+                var fach = data[x].data.features[0].properties.fachbereich;
+                var img = data[x].data.features[0].properties.image;
+                var polygon = L.polygon(data[x].data.features[0].geometry.coordinates, {}).addTo(map).bindPopup(createPopup(name, fach, img));
+                //console.log(polygon._leaflet_id);
+                Institute.addLayer(polygon);
+                institutPopups.push(polygon);
+                //map.fitBounds(polygon.getBounds());
+                html += generateHtml(data[x].data, x);
+            }
+            document.getElementById("InstituteTable").innerHTML = html;
+        },
+        error: function (xhr) {
+
+        }
+    });
 }
 
 function openInformation(pID) {
@@ -142,77 +122,6 @@ function createPopup(pName, pFach, pBild) {
     return str;
 }
 
-///**
-// * Startet sobald alle ajax anfragen geendet haben
-// */
-//$(document).ajaxStop(function () {
-//    var html = "";
-//    for (var i = 0; i < instituteArr.length; i++) {
-//        html += generateHtml(instituteArr[i])
-//    }
-//    document.getElementById("InstituteTable").innerHTML = html;
-//});
-
-/////**
-//// * holt sich alle Mensen in einem Umkreis von 10km ums Stadtzentrum 
-//// */
-////function getMensen() {
-////    $.ajax({
-////        url: "https://openmensa.org/api/v2/canteens/?near[lat]=51.96&near[lng]=7.63",
-////        type: "GET",
-////        success: function (data) {
-////            for (var i = 0; i < data.length; i++) {
-////                mensen.push(new Mensa(data[i].id, data[i].name, data[i].coordinates));
-////            }
-////            //console.log(mensen);
-////            for (var i = 0; i < mensen.length; i++) {
-////                getMeal(mensen[i], i);
-////                //console.log(mensen[i].gerichte);
-////            }
-
-////        },
-////        error: function (xhr) {
-////            alert(xhr.statusText);
-////        }
-////    });
-////}
-
-///**
-// * holt sich das Essens-Angebot aller Mensen 
-// * @param {Mensa} pMensa Mensa für díe das Angebot gesucht wird
-// * @param {Number} i position im Array an der sich die Mensa befindet
-// */
-//function getMeal(pMensa, i) {
-//    //aktuelles Datum umschreiben, damit es fuer die Mensa API verwendet werden kann
-//    var hHeute = new Date(),
-//        hMonat = hHeute.getMonth() + 1,
-//        hTag = hHeute.getDate();
-//    if (hMonat < 10)
-//        hMonat = "0" + hMonat;
-//    if (hTag < 10)
-//        hTag = "0" + hTag;
-//    hHeute = hHeute.getFullYear() + "-" + hMonat + "-" + hTag;
-
-//    var hGerichte = [];
-//    $.ajax({
-//        url: "https://openmensa.org/api/v2/canteens/" + pMensa.id + "/days/" + hHeute + "/meals",
-//        type: "GET",
-//        success: function (data) {
-//            //Gerichte werden abgefragt und dann in der Mensa gespeichert
-//            for (var j = 0; j < data.length; j++) {
-//                var gericht = new Gericht(data[j].id, pMensa.name, data[j].name, data[j].prices);
-//                hGerichte.push(gericht);
-//            }
-//            //console.log(hGerichte);
-//            mensen[i].setGerichte(hGerichte);
-
-//        },
-//        error: function (xhr) {
-//            console.log("kein Gericht gefunden");
-//        }
-//    });
-
-//}
 
 /**
  * Generiert die Tabelle auf der Mensa-Seite

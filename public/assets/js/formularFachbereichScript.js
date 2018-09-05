@@ -10,6 +10,7 @@ class Fachbereich {
         this.zName = pName;
         this.zAbk = pAbk;
         this.zWebseite = pWebseite;
+        this.institute = [];
     }
 
     toJSON() {
@@ -17,6 +18,7 @@ class Fachbereich {
             "name": this.zName,
             "abkuerzung": this.zAbk,
             "webseite": this.zWebseite,
+            "institute": []
         }
         return json;
     }
@@ -49,7 +51,17 @@ function addFachbereich() {
  * @param {JSON} object
  */
 function addToDatabase(object) {
-    console.log(object);
+    $.ajax({
+        type: 'POST',
+        data: object,
+        url: "/addFachbereich",
+        success: function () {
+            alert('Fachbereich gespeichert');
+        },
+        error: function () {
+            alert('Speichern fehlgeschlagen');
+        }
+    });
 }
 
 /**

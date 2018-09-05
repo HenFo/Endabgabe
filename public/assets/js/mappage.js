@@ -34,8 +34,9 @@ L.control.layers({
 var control = L.Routing.control({
     router: L.routing.mapbox(accessToken),
     waypoints: [
-        null,null
+        "undefined", "undefined"
     ],
+    language: "de",
     routeWhileDragging: true,
     geocoder: L.Control.Geocoder.nominatim()
 }).on('routingerror', function (e) {
@@ -49,6 +50,136 @@ var control = L.Routing.control({
 //control.hide(); //manchmal Probleme, dass die minimierte Version nicht angezeigt wird. Dann die Seite neu laden.
 //error control
 L.Routing.errorControl(control).addTo(map);
+
+
+class Route {
+    constructor(pName, pStart, pZiel) {
+        this.zName = pName;
+        this.zStart = pStart;
+        this.zZiel = pZiel;
+        this.zVia = [null];
+    }
+
+    toJSON() {
+        var json = {
+            "name": this.zName,
+            "start": this.zStart,
+            "via": this.pVia,
+            "ziel": this.zZiel
+        };
+        return json;
+    }
+}
+
+
+var instituteArr = [];
+var institutPopups = [];
+var autoArr = [];
+/**
+ * Startet sobald die Seite aufgerufen wird
+ */
+window.onload = function () {
+    getMensen();
+    $.ajax({
+        type: 'GET',
+        url: "/getAllInstitutes",
+        success: function (data) {
+            for (var x in data) {
+                instituteArr.push(data[x].data);
+                autoArr.push(data[x].data.features[0].properties.name);
+                var name = data[x].data.features[0].properties.name;
+                var fach = data[x].data.features[0].properties.fachbereich;
+                var img = data[x].data.features[0].properties.image;
+                var coord = data[x].data.features[0].geometry.coordinates;
+                console.log({ "lat": coord[0][0], "lng": coord[0][1] });
+                var polygon = L.polygon(coord, {}).addTo(map).bindPopup(createPopup(name, fach, img, coord[0]));
+                Institute.addLayer(polygon);
+                institutPopups.push(polygon);
+            }
+        },
+        error: function (xhr) {
+            
+        }
+    });
+
+    $.ajax({
+        type: 'GET',
+        url: "/getAllRoutes",
+        success: function (data) {
+            for (var x in data) {
+                autoArr.push(data[x].name);
+            }
+        },
+        error: function (xhr) {
+
+        }
+    });
+
+}
+
+function openInformation(pID) {
+    institutPopups[pID].openPopup();
+}
+
+/**
+ * erstellt ein Popup fuer die Institute
+ * @param {String} pName
+ * @param {String} pFach
+ * @param {URL} pBild
+ * @param {JSON} pPos
+ */
+function createPopup(pName, pFach, pBild, pPos) {
+    var str = "<table class='table'><tr><td>" + pName + "</td><td>" + pFach + "</td><td><img src='" + pBild + "' height=60 /></td></tr><table><br/><button class='btn popup' onclick='routeToNextMensaFromInst(" +pPos+")'>Zur naechsten Mensa navigieren</button>";
+    return str;
+}
+
+$(document).ready(function () {
+    $("#routeButton").click(function () {
+        if (checkRoute()) {
+            if (!document.getElementById("routeButton").hasAttribute("name")) {
+                $("#routeButton").html("<b>Speichern!</b>")
+                $('#routeButton').attr('name', '');
+                $("#routeName").slideDown();
+            } else {
+                if (document.getElementById("routeName").value != "") {
+                    saveRoute();
+                    document.getElementById("routeName").value = ""
+                    $("#routeButton").html("aktuelle Route speichern")
+                    $('#routeButton').removeAttr("name");
+                    $("#routeName").slideUp();
+                } else {
+                    alert("bitte Name eingeben");
+                }
+            }
+        } else {
+            alert("Keine Route vorhanden");
+        }
+    });
+});
+
+function saveRoute() {
+    console.log(document.getElementById("routeName").value);
+    var name = document.getElementById("routeName").value;
+    var start = control.getWaypoints()[0].latLng;
+    var ziel = control.getWaypoints()[control.getWaypoints().length - 1].latLng;
+    var object = new Rout(name, start, ziel);
+    object = object.toJSON();
+    for (var i = 1; i < control.getWaypoints().length - 1; i++) {
+        object.via.push(control.getWaypoints()[i].latLng);
+    }
+    console.log(object);
+    $.ajax({
+        type: 'POST',
+        data: object,
+        url: "/addRoute",
+        success: function () {
+            alert('Route gespeichert');
+        },
+        error: function () {
+            alert('Speichern fehlgeschlagen');
+        }
+    });
+}
 
 //globaler Speicher fuer die aktuelle Position
 var latestPosition = null;
@@ -90,6 +221,22 @@ function routeToNextMensa() {
     } catch(e) {
         alert("Bitte Startpunkt auswaehlen indem Du auf die Karte klickst oder GPS starten unter 'Orte mich!'. Dann probier es nochmal");
     }
+}
+
+/**
+ * Navigiert dich zur naechstgelegenden Mensa
+ * 
+ */
+function routeToNextMensaFromInst(lat,lng) {
+    var mensa = nextMensa({"lat":lat, "lng":lng}); //sammeln der noetigen Informationen
+    control.spliceWaypoints(control.getWaypoints().length - 1, 1, { lat: mensa.lat, lng: mensa.lng });
+    control.spliceWaypoints(0, 1, { "lat": lat, "lng": lng });
+    control.show();
+}
+
+function checkRoute() {
+    var waypoints = control.getWaypoints();
+    return waypoints[0].latLng !== null && waypoints[1].latLng !== null ? true : false;
 }
 
 /**

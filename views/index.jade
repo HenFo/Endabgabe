@@ -49,7 +49,12 @@ html
               button#gpsButton.btn.red(onclick='getPosition()', type='button')
                 | Orte mich! 
                 i.fa.fa-crosshairs
-              button.btn.orange(type='button', style='margin-top:10px', onclick='routeToNextMensa()') zur naechsten Mensa 
+              button.btn.orange(type='button', style='margin-top:10px', onclick='routeToNextMensa()') zur naechsten Mensa
+              button#routeButton.btn.route(type='button', style='margin-top:10px') aktuelle Route speichern
+              input#routeName.textfeld.search(type="text" placeholder="Name der Route" name="Routenname" style='display:none')
+              .searchSection.autocomplete
+                input#searchInput.textfeld.search(type="text" placeholder="Search.." name="search" autocomplete="off")
+                input#submitSearch.submit(type='button' value='Suchen') 
           .col-sm-9.mapCol
             #map.map
     footer.page-footer.dark(style='padding-top: 10px;')
@@ -60,3 +65,4 @@ html
     script(src='assets/js/theme.js')
     script(src='assets/js/mappage.js')
     script(src='assets/js/mensen.js')
+    script(src='assets/js/autocomplete.js')

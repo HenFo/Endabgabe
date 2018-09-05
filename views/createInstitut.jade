@@ -45,15 +45,15 @@ html
               #editingOptions.editingOptions
                 #fachbereich
                   h2.editingOptions Fachbereiche:
-                  a.a-edit(href='/createFachbereich/fachbereich') Fachbereich hinzufuegen
+                  a.a-edit(href='/createFachbereich/fachbereich') Fachbereich <i class="fa fa-plus"></i>
                   br
-                  a.a-edit(href='/editFachbereich/fachbereich') Fachbereich bearbeiten
+                  a.a-edit(href='/editFachbereich/fachbereich') Fachbereich <i class="fa fa-pencil"></i>
                   br
                 #institute
                   h2.editingOptions Institute:
-                  a.a-edit(href='/createInstitut/institute') Institut hinzufuegen
+                  a.a-edit(href='/createInstitut/institute') Institut <i class="fa fa-plus"></i>
                   br
-                  a.a-edit(href='/editInstitut/institute') Institut bearbeiten
+                  a.a-edit(href='/editInstitut/institute') Institut <i class="fa fa-pencil"></i>
                   br
           .col-sm-9.mapCol
             #institutForm
@@ -62,7 +62,8 @@ html
               h3 Fachbereich
               select#fachbereichSelect.textfeld(style='width:auto')
                 option(value='1') wähle zugehörigen Fachbereich
-                option Test
+                each val in fachbereiche 
+                  option= val.abkuerzung
               h3 Bild
               input#InstitutBildURL.textfeld(type='url', placeholder='Bild-URL einfügen')
               h3

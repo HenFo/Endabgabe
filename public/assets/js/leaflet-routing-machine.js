@@ -11053,6 +11053,7 @@ module.exports={
 					input = L.DomUtil.create('input', '', container),
 					remove = options.addWaypoints ? L.DomUtil.create('span', 'leaflet-routing-remove-waypoint', container) : undefined;
 
+                
 				input.disabled = !options.addWaypoints;
 
 				return {

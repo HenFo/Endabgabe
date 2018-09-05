@@ -53,9 +53,23 @@ var geoJsonLayers = {
  */
 map.on(L.Draw.Event.CREATED, function (event) {
     var layer = event.layer;
-    geoJsonLayers.features.push(layer.toGeoJSON());
+    var layerSwitch = layer.toGeoJSON();
+    layerSwitch.geometry.coordinates = switchCoordinates(layerSwitch);
+    geoJsonLayers.features.push(layerSwitch);
+    console.log(geoJsonLayers);
     Institute.addLayer(layer);
 });
+
+function switchCoordinates(pLayer) {
+    var hCoor = pLayer.geometry.coordinates;
+    var arr = [];
+    for (var p in hCoor[0]) {
+        var point = hCoor[0][p];
+        point = [point[1], point[0]];
+        arr.push(point);
+    }
+    return arr;
+}
 
 function toggleList(listID) {
     $("#" + listID).toggle();
@@ -102,6 +116,24 @@ class Institut {
 }
 
 
+
+window.onload = function () {
+    $.ajax({
+        type: 'GET',
+        url: "/getAllInstitutes",
+        success: function (data) {
+            for (var x in data) {
+                var polygon = L.polygon(data[x].data.features[0].geometry.coordinates, {}).addTo(map);
+                Institute.addLayer(polygon);
+            }
+        },
+        error: function (xhr) {
+            alert(xhr.statusText);
+        }
+    });
+}
+
+
 var hGeometryInput = 0;
 function addInstitut() {
     var name = document.getElementById("InstitutName").value;
@@ -117,7 +149,6 @@ function addInstitut() {
                 try {
                     if (geoJsonLayers.features.length > 0) {
                         var institut = new Institut(name, fachbereich, img, geoJsonLayers.features[0].geometry);
-                        //console.log(institut.toGeoJSON());
                         addToDatabase(institut.toGeoJSON());
                     } else { alert("bitte Geometrie zeichnen"); }
                 } catch (e) { alert(e) };
@@ -135,9 +166,9 @@ function addInstitut() {
                 alert("Geometrie eingeben");
                 break;
         }
-        document.getElementById("InstitutName").value = "";
-        document.getElementById("fachbereichSelect").value = 1;
-        document.getElementById("InstitutBildURL").value = "";
+        //document.getElementById("InstitutName").value = "";
+        //document.getElementById("fachbereichSelect").value = 1;
+        //document.getElementById("InstitutBildURL").value = "";
     }
 }
 
@@ -180,8 +211,34 @@ function loadDoc() {
     }
 }
 
-function addToDatabase(pJsonInstitut) {
-    instituteArr.push(pJsonInstitut);
+function addToDatabase(pObject) {
+    var object = JSON.stringify(pObject);
+    //console.log(object);
+    console.log(pObject);
+    $.ajax({
+        type: 'POST',
+        data: { "ObjectType": "Institut", "data": object },
+        url: "/addInstitut",
+        success: function () {
+            alert('Institut gespeichert');
+            
+        },
+        error: function () {
+            alert('Speichern fehlgeschlagen');
+        }
+    });
+
+    $.ajax({
+        type: 'POST',
+        data: {"data": object},
+        url: "/addInstitutInFachbereich",
+        success: function () {
+            alert('Institut in Fachbereich gespeichert');
+        },
+        error: function () {
+            alert('Institut speichern fehlgeschlagen');
+        }
+    });
 }
 
 $(document).ready(function () {
