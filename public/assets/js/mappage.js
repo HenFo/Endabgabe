@@ -241,7 +241,8 @@ function openInformation(pID) {
     institutPopups[pID].openPopup();
 }
 
-function showOnMap(pData) {   
+function showOnMap(pData) {
+    $("#routeButtons").slideDown();
     control.spliceWaypoints(0, 1, pData.start);
     control.spliceWaypoints(control.getWaypoints().length - 1, 1, pData.ziel);
 }
@@ -309,6 +310,7 @@ $(document).ready(function () {
         }
     });
 });
+
 
 function saveRoute() {
     console.log(document.getElementById("routeName").value);
