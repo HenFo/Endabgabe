@@ -29,7 +29,7 @@ map.addControl(new L.Control.Fullscreen().setPosition("topright"));
 L.control.layers({
     "outdoor": outdor.addTo(map),
     "satellite": satellite,
-},null, { position: 'topright' }).addTo(map);
+}, null, { position: 'topright' }).addTo(map);
 
 var control = L.Routing.control({
     router: L.routing.mapbox(accessToken),
@@ -40,13 +40,13 @@ var control = L.Routing.control({
     routeWhileDragging: true,
     geocoder: L.Control.Geocoder.nominatim()
 }).on('routingerror', function (e) {
-        try {
-            map.getCenter();
-        } catch (e) {
-            map.fitBounds(L.latLngBounds(control1.getWaypoints().map(function (wp) { return wp.latLng; })));
-        }
-        //handleError(e);
-    }).addTo(map);
+    try {
+        map.getCenter();
+    } catch (e) {
+        map.fitBounds(L.latLngBounds(control1.getWaypoints().map(function (wp) { return wp.latLng; })));
+    }
+    //handleError(e);
+}).addTo(map);
 //control.hide(); //manchmal Probleme, dass die minimierte Version nicht angezeigt wird. Dann die Seite neu laden.
 //error control
 L.Routing.errorControl(control).addTo(map);
@@ -57,14 +57,12 @@ class Route {
         this.zName = pName;
         this.zStart = pStart;
         this.zZiel = pZiel;
-        this.zVia = [null];
     }
 
     toJSON() {
         var json = {
             "name": this.zName,
             "start": this.zStart,
-            "via": this.pVia,
             "ziel": this.zZiel
         };
         return json;
@@ -74,12 +72,19 @@ class Route {
 
 var instituteArr = [];
 var institutPopups = [];
+
 var autoArr = [];
+var autoArrDist = {
+    "institute": 0,
+    "routen": 0,
+    "fachbereiche": 0,
+    "mensen": 0,
+};
+
 /**
  * Startet sobald die Seite aufgerufen wird
  */
 window.onload = function () {
-    getMensen();
     $.ajax({
         type: 'GET',
         url: "/getAllInstitutes",
@@ -91,24 +96,42 @@ window.onload = function () {
                 var fach = data[x].data.features[0].properties.fachbereich;
                 var img = data[x].data.features[0].properties.image;
                 var coord = data[x].data.features[0].geometry.coordinates;
-                console.log({ "lat": coord[0][0], "lng": coord[0][1] });
                 var polygon = L.polygon(coord, {}).addTo(map).bindPopup(createPopup(name, fach, img, coord[0]));
                 Institute.addLayer(polygon);
                 institutPopups.push(polygon);
             }
-        },
-        error: function (xhr) {
-            
-        }
-    });
+            autoArrDist.institute = data.length;
 
-    $.ajax({
-        type: 'GET',
-        url: "/getAllRoutes",
-        success: function (data) {
-            for (var x in data) {
-                autoArr.push(data[x].name);
-            }
+            $.ajax({
+                type: 'GET',
+                url: "/getAllRoutes",
+                success: function (data) {
+                    for (var x in data) {
+                        autoArr.push(data[x].name);
+                    }
+                    autoArrDist.routen = data.length + autoArrDist.institute;
+
+                    $.ajax({
+                        type: 'GET',
+                        url: "/getAllFachbereiche",
+                        success: function (data) {
+                            for (var x in data) {
+                                autoArr.push(data[x].name);
+                                autoArr.push(data[x].abkuerzung);
+                            }
+                            autoArrDist.fachbereiche = data.length * 2 + autoArrDist.routen;
+
+                            getMensen();
+                        },
+                        error: function (xhr) {
+
+                        }
+                    });
+                },
+                error: function (xhr) {
+
+                }
+            });
         },
         error: function (xhr) {
 
@@ -117,8 +140,139 @@ window.onload = function () {
 
 }
 
+$(document).ajaxStop(function () {
+    console.log(autoArrDist);
+    console.log(autoArr);
+    console.log(mensenPopup);
+    mensenPopup[4].openPopup();
+});
+
+$(document).ready(function () {
+    $("#submitSearch").click(function () {
+        $("#searchTable").show();
+        document.getElementById("searchTable").innerHTML = "";
+        var search = document.getElementById("searchInput").value.toLowerCase();
+        if (search != "") {
+            var i = 0, res = [];
+            while (i < autoArr.length) {
+                if (autoArr[i].toLowerCase().includes(search)) {
+                    res.push({ "index": i, "data": autoArr[i] });
+                }
+                i++;
+            }
+            for (var x in res) {
+                if (res[x].index >= autoArrDist.institute) {
+                    if (res[x].index >= autoArrDist.routen) {
+                        if (res[x].index >= autoArrDist.fachbereiche) {
+                            if (res[x].index >= autoArrDist.mensen) {
+                                alert("Fehler bei der Suche: Kein Ergebnis");
+                            } else {
+                                findMensa(res[x].data);
+                            }
+                        } else {
+                            findFachbereich(res[x].data);
+                        }
+                    } else {
+                        findRoute(res[x].data);
+                    }
+                } else {
+                    findInstitut(res[x].data);
+                }
+            }
+        }
+    })
+})
+
+function findInstitut(pName) {
+    var i = 0, flag = false, hInst = { "institut": null, "index": null };
+    while (i < instituteArr.length && !flag) {
+        flag = instituteArr[i].features[0].properties.name == pName;
+        i++
+    }
+    hInst.institut = instituteArr[i-1];
+    hInst.index = i-1;
+    generateList(hInst, 0);
+}
+
+function findFachbereich(pName) {
+    if (pName.includes("FB"))
+        var data = { "abkuerzung": pName };
+    else
+        var data = { "name": pName };
+    $.ajax({
+        type: 'POST',
+        data: data,
+        url: "/findFachbereich",
+        success: function (data) {
+            console.log("Fachbereich " + data)
+            generateList(data, 1);
+        },
+        error: function (xhr) {
+
+        }
+    });
+}
+
+function findRoute(pName) {
+    $.ajax({
+        type: 'POST',
+        data: { "name": pName },
+        url: "/findRoute",
+        success: function (data) {
+            console.log("Routen " + data)
+            generateRoute(data, 2);
+        },
+        error: function (xhr) {
+
+        }
+    });
+}
+
+function findMensa(pName) {
+    var i = 0, flag = false;
+    while (i < mensen.length && !flag) {
+        flag = mensen[i].name === pName;
+        i++
+    }
+    generateList({ "mensa": mensen[i-1], "index": i-1 }, 3);
+}
+
 function openInformation(pID) {
     institutPopups[pID].openPopup();
+}
+
+function showOnMap(data) {
+    control.spliceWaypoints(0, 1, data[0].start);
+    control.spliceWaypoints(control.getWaypoints().length - 1, 1, data[0].ziel);
+}
+
+function generateList(data, type) {
+    var html = "";
+    switch (type) {
+        case 0: //institute
+            html += "<li class='lists' onclick='openInformation(" + data.index + ")'>" + data.institut.features[0].properties.name + " aus " + data.institut.features[0].properties.fachbereich + "</li>";
+            document.getElementById("searchTable").innerHTML += html;
+            break;
+        case 1: //fachbereiche
+            html += "<li class='fachSearchList'>" + data[0].name + "<ul>";
+            for (var x in data[0].institute) {
+                html += "<li>" + data[0].institute[x].name + "</li>";
+            }
+            html += "</ul>";
+            document.getElementById("searchTable").innerHTML += html + "</li>";
+            break;
+        case 2: //routen
+            html += "<li class='lists' onclick='showOnMap(" + data[0] + ")'>" + data[0].name + "</li>";
+            document.getElementById("searchTable").innerHTML += html;
+            break;
+        case 3: //mensen
+            html += "<li class='lists' onclick='openMensaPopup(" + data.index + ")'>" + data.mensa.name + "</li>";
+            document.getElementById("searchTable").innerHTML += html;
+
+    }
+
+
+
 }
 
 /**
@@ -129,7 +283,7 @@ function openInformation(pID) {
  * @param {JSON} pPos
  */
 function createPopup(pName, pFach, pBild, pPos) {
-    var str = "<table class='table'><tr><td>" + pName + "</td><td>" + pFach + "</td><td><img src='" + pBild + "' height=60 /></td></tr><table><br/><button class='btn popup' onclick='routeToNextMensaFromInst(" +pPos+")'>Zur naechsten Mensa navigieren</button>";
+    var str = "<table class='table'><tr><td>" + pName + "</td><td>" + pFach + "</td><td><img src='" + pBild + "' height=60 /></td></tr><table><br/><button class='btn popup' onclick='routeToNextMensaFromInst(" + pPos + ")'>Zur naechsten Mensa navigieren</button>";
     return str;
 }
 
@@ -164,9 +318,6 @@ function saveRoute() {
     var ziel = control.getWaypoints()[control.getWaypoints().length - 1].latLng;
     var object = new Rout(name, start, ziel);
     object = object.toJSON();
-    for (var i = 1; i < control.getWaypoints().length - 1; i++) {
-        object.via.push(control.getWaypoints()[i].latLng);
-    }
     console.log(object);
     $.ajax({
         type: 'POST',
@@ -218,7 +369,7 @@ function routeToNextMensa() {
         var mensa = nextMensa(control.getWaypoints()[0].latLng); //sammeln der noetigen Informationen
         control.spliceWaypoints(control.getWaypoints().length - 1, 1, { lat: mensa.lat, lng: mensa.lng });
         control.show();
-    } catch(e) {
+    } catch (e) {
         alert("Bitte Startpunkt auswaehlen indem Du auf die Karte klickst oder GPS starten unter 'Orte mich!'. Dann probier es nochmal");
     }
 }
@@ -227,8 +378,8 @@ function routeToNextMensa() {
  * Navigiert dich zur naechstgelegenden Mensa
  * 
  */
-function routeToNextMensaFromInst(lat,lng) {
-    var mensa = nextMensa({"lat":lat, "lng":lng}); //sammeln der noetigen Informationen
+function routeToNextMensaFromInst(lat, lng) {
+    var mensa = nextMensa({ "lat": lat, "lng": lng }); //sammeln der noetigen Informationen
     control.spliceWaypoints(control.getWaypoints().length - 1, 1, { lat: mensa.lat, lng: mensa.lng });
     control.spliceWaypoints(0, 1, { "lat": lat, "lng": lng });
     control.show();
@@ -306,7 +457,7 @@ function nextMensa(latlng) {
         }
     }
     return {
-        dist:dist, mensa:hMensa.name, lat: hMensa.coordinaten[0], lng: hMensa.coordinaten[1]
+        dist: dist, mensa: hMensa.name, lat: hMensa.coordinaten[0], lng: hMensa.coordinaten[1]
     }
 }
 
