@@ -42,7 +42,8 @@ map.addControl(new L.Control.Draw({
     }
 }));
 
-
+//layer in der die gezeichneten features abgespeichert werden.
+//ACHTUNG: Nur das zuerst gezeichnete Feature wird bearbeitet
 var geoJsonLayers = {
     "type": "FeatureCollection",
     "features": []
@@ -60,6 +61,10 @@ map.on(L.Draw.Event.CREATED, function (event) {
     Institute.addLayer(layer);
 });
 
+/**
+ * tauscht die Coordinaten in die richtige Reihenfolge
+ * @param {any} pLayer
+ */
 function switchCoordinates(pLayer) {
     var hCoor = pLayer.geometry.coordinates;
     var arr = [];
@@ -71,6 +76,10 @@ function switchCoordinates(pLayer) {
     return arr;
 }
 
+/**
+ * oeffnet/schliesst eine Liste mit der uebergebenen ID
+ * @param {any} listID Teil der Liste welches geoeffnet/geschlossen werden soll
+ */
 function toggleList(listID) {
     $("#" + listID).toggle();
 }
@@ -83,7 +92,7 @@ function toggleList(listID) {
 
 class Institut {
     /**
-     * Erstellt die Klasse Institut
+     * Erstellt ein Objekt der Klasse Institut
      * @param {String} pName
      * @param {String} pFachbereich
      * @param {String} pBildURL
@@ -96,6 +105,10 @@ class Institut {
         this.zGeometry = pGeometry;
     }
 
+    /**
+     * Macht aus sich selbst ein valides GeoJSON Objekt
+     * @returns Ein Institut als GeoJSON
+     */
     toGeoJSON() {
         var geoJSON = {
             "type": "FeatureCollection",
@@ -103,10 +116,10 @@ class Institut {
                 {
                     "type": "Feature",
                     "properties": {
-                            "name": this.zName,
-                            "fachbereich": this.zFachbereich,
-                            "image": this.zBildURL
-                        },
+                        "name": this.zName,
+                        "fachbereich": this.zFachbereich,
+                        "image": this.zBildURL
+                    },
                     "geometry": this.zGeometry
                 }
             ]
@@ -118,6 +131,7 @@ class Institut {
 
 
 window.onload = function () {
+    //sammeln aller institute und fuegt sie der Karte hinzu
     $.ajax({
         type: 'GET',
         url: "/getAllInstitutes",
@@ -133,45 +147,55 @@ window.onload = function () {
     });
 }
 
-
-var hGeometryInput = 0;
+/**
+ * fuegt das Institut aus dem Formular der Datenbank hinzu
+ */
+var hGeometryInput = 0; //Art der Geometrie-Eingabe
 function addInstitut() {
+    //sammeln aller Informationen fuer das Institut
     var name = document.getElementById("InstitutName").value;
     var fachbereich = document.getElementById("fachbereichSelect").value;
     var img = document.getElementById("InstitutBildURL").value;
 
+    //Fehleranalyse
     if (fachbereich == "wähle Fachbereich") { alert("bitte Fachbereich auswählen"); }
+    else if (name == "") { alert("bitte Namen eingeben");}
     else if (!isURL(img)) { alert("bitte korrekte URL angeben"); }
     else {
-
+        //waehlt die passende Verarbeitung der Geometrie
         switch (hGeometryInput) {
-            case 0:
+            case 0: //bei manueller Eingabe
                 try {
                     if (geoJsonLayers.features.length > 0) {
                         var institut = new Institut(name, fachbereich, img, geoJsonLayers.features[0].geometry);
+                        //Hinzufuegen zur Datenbank
                         addToDatabase(institut.toGeoJSON());
                     } else { alert("bitte Geometrie zeichnen"); }
                 } catch (e) { alert(e) };
                 break;
-            case 1:
+            case 1: //bei Eingabe ueber URL oder GeoJSON
                 try {
+                    //eingabe auswerten
                     var json = loadDoc();
+                    //gibt die passende Geometrie wieder, unabhaengig des GeoJSON Objekts
                     var geometry = returnGeometry(json);
                     var institut = new Institut(name, fachbereich, img, geometry);
-                    //console.log(institut.toGeoJSON());
+                    //zur DB hinzufuegen
                     addToDatabase(institut.toGeoJSON());
-                } catch (e) {alert(e)}
+                } catch (e) { alert(e) }
                 break;
-            default:
+            default: //fangen aller Fehler
                 alert("Geometrie eingeben");
                 break;
         }
-        //document.getElementById("InstitutName").value = "";
-        //document.getElementById("fachbereichSelect").value = 1;
-        //document.getElementById("InstitutBildURL").value = "";
     }
 }
 
+/**
+ * gibt die Geometrie eines GeoJSON Objekts wieder
+ * @param {JSON} pGeoJSON GeoJSON
+ * @returns Geometrie
+ */
 function returnGeometry(pGeoJSON) {
     if (pGeoJSON.type == "FeatureCollection") {
         return pGeoJSON.features[0].geometry;
@@ -207,17 +231,21 @@ function loadDoc() {
             geoJsonObject = JSON.parse("" + document.getElementById("geoJSON").value);
             return geoJsonObject;
         } catch (e) { alert(e) };
-        
+
     }
 }
 
+/**
+ * fuegt ein Institut der Datenbank hinzu
+ * @param {JSON} pObject zur DB hinzuzufuegendes Institut als GeoJSon
+ */
 function addToDatabase(pObject) {
+    //objekt als String um fehler zu verhindern
     var object = JSON.stringify(pObject);
-    //console.log(object);
-    console.log(pObject);
     $.ajax({
         type: 'POST',
-        data: { "ObjectID": "Institut"+pObject.features[0].properties.name, "data": object },
+        //verteilen eine ID um Institut spaeter ansprechen zu koennen
+        data: { "ObjectID": "Institut" + pObject.features[0].properties.name, "data": object },
         url: "/addInstitut",
         success: function () {
             $.ajax({
@@ -226,22 +254,24 @@ function addToDatabase(pObject) {
                 url: "/addInstitutInFachbereich",
                 success: function () {
                     alert('Institut gespeichert');
+                    //Seite neu laden
                     location.reload();
                 },
                 error: function () {
                     alert('Institut speichern fehlgeschlagen');
                 }
             });
-            
+
         },
         error: function () {
             alert('Speichern fehlgeschlagen');
         }
     });
 
-    
+
 }
 
+//wechseln zwischen den Eingabemoeglichkeiten
 $(document).ready(function () {
     $("#Bzeichnen").click(function () {
         $("#geoJSON").hide();
@@ -252,6 +282,7 @@ $(document).ready(function () {
     });
 });
 
+//wechseln zwischen den Eingabemoeglichkeiten
 $(document).ready(function () {
     $("#Bcopy").click(function () {
         $("#mapEdit").hide();

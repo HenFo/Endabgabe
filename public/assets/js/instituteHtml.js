@@ -21,9 +21,6 @@ L.control.zoom({
 var Institute = L.featureGroup().addTo(map);
 var Mensen = L.featureGroup().addTo(map);
 var Fachbereiche = L.featureGroup().addTo(map);
-//L.control.layers(null, {
-//    'Institute': Institute,
-//}, { position: 'topleft', collapsed: false }).addTo(map);
 
 //Fullscreen Option
 map.addControl(new L.Control.Fullscreen().setPosition("topright"));
@@ -70,41 +67,31 @@ map.on('click', function (e) {
 
 //////////////////////////////////////////////////////////////
 
+//Array mit allen Instituten
 var instituteArr = [];
-function getAllIbstitutes() {
-    $.ajax({
-        type: 'GET',
-        url: "/getAllInstitutes",
-        success: function () {
-
-        },
-        error: function () {
-            alert('fehler beim laden der Institute');
-        }
-    });
-}
-
 var institutPopups = [];
 /**
  * Startet sobald die Seite aufgerufen wird
  */
 window.onload = function () {
+    //Sammelt alle Institute
     $.ajax({
         type: 'GET',
         url: "/getAllInstitutes",
         success: function (data) {
             var html = "";
             for (var x in data) {
+                //sammeln der Daten fuer die HTML Seite
                 var name = data[x].data.features[0].properties.name;
                 var fach = data[x].data.features[0].properties.fachbereich;
                 var img = data[x].data.features[0].properties.image;
+                //erstellen der Geometrie fuer die Karte
                 var polygon = L.polygon(data[x].data.features[0].geometry.coordinates, {}).addTo(map).bindPopup(createPopup(name, fach, img));
-                //console.log(polygon._leaflet_id);
                 Institute.addLayer(polygon);
                 institutPopups.push(polygon);
-                //map.fitBounds(polygon.getBounds());
                 html += generateHtml(data[x].data, x);
             }
+            //generierten HTML-String in die Seite einfuegen
             document.getElementById("InstituteTable").innerHTML = html;
         },
         error: function (xhr) {
@@ -113,10 +100,20 @@ window.onload = function () {
     });
 }
 
+/**
+ * Oeffnet das Popup mit der zugehoerigen ID
+ * @param {any} pID ID des zu oeffnenden Popups
+ */
 function openInformation(pID) {
     institutPopups[pID].openPopup();
 }
 
+/**
+ * Erstellt ein Popup fuer ein Institut
+ * @param {String} pName NAme des Instituts
+ * @param {String} pFach Name des Fachbereichs des Instituts
+ * @param {image} pBild Bild des Instituts
+ */
 function createPopup(pName, pFach, pBild) {
     var str = "<table class='table'><tr><td>" + pName + "</td><td>" + pFach + "</td><td><img src='" + pBild + "' height=60 /></td></tr><table>";
     return str;
@@ -128,10 +125,13 @@ function createPopup(pName, pFach, pBild) {
  * @param {JSON} pInstitut Institut, dessen Informationen in eine Tabelle uebertragen werden
  */
 function generateHtml(pInstitut, pID) {
-    var str = "<li class='lists' onclick='openInformation(" +pID+ ")'>" + pInstitut.features[0].properties.name + " aus " + pInstitut.features[0].properties.fachbereich + "</li>";
+    var str = "<li class='lists' onclick='openInformation(" + pID + ")'>" + pInstitut.features[0].properties.name + " aus " + pInstitut.features[0].properties.fachbereich + "</li>";
     return str;
 }
 
+/**
+ * loescht alle Institute aus der DB
+ */
 function clearInstitutCollection() {
     $.ajax({
         type: 'POST',
@@ -145,7 +145,3 @@ function clearInstitutCollection() {
         }
     });
 }
-
-
-
-

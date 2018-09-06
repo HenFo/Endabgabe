@@ -1,7 +1,7 @@
 "use strict";
 class Fachbereich {
     /**
-     * Erstellt die Klasse Fachbereich
+     * Erstellt ein Objekt der Klasse Fachbereich
      * @param {String} pName
      * @param {String} pAbk
      * @param {URL} pWebseite
@@ -24,14 +24,20 @@ class Fachbereich {
     }
 }
 
+/**
+ * Startet sobald die Seite aufgerufen wird
+ */
 window.onload = function () {
     getFachbereiche();
 }
 
-var autoArr = [];
-var fachbereichArr = [];
-var fachID = "";
+var autoArr = []; //Array fuer die Autocompletefunktion
+var fachbereichArr = []; //Array mit allen Fachbereichen
+var fachID = ""; //ID des zu bearbeitenden Fachbereichs
 
+/**
+ * Sammeln aller Fachbereiche
+ */
 function getFachbereiche() {
     $.ajax({
         url: "/getAllFachbereiche",
@@ -48,22 +54,29 @@ function getFachbereiche() {
     });
 }
 
-
+//getriggert wenn suche aktiviert wird
 $(document).ready(function () {
     $("#submitSearch").click(function () {
         var hName = document.getElementById("searchInput").value;
         if (hName != "") {
+            //suchen des gesuchten Fachbereichs
             var i = 0, flag = false;
             while (i < fachbereichArr.length && !flag) {
                 flag = fachbereichArr[i].name == hName || fachbereichArr[i].abkuerzung == hName;
                 i++;
             }
+            //abfangen, dass Fachbereich nicht gefunden wurde
             if (i <= fachbereichArr.length) {
                 i--;
+                //einfuegen aller Informationen
                 $("#fachbereichName").val(fachbereichArr[i].name);
+                //abkuerzung laesst sich nicht bearbeiten
                 $("#fachbereichAbkuerzung").val(fachbereichArr[i].abkuerzung);
                 $("#fachbereichWebseite").val(fachbereichArr[i].webseite);
+                //setzen der ID
                 fachID = fachbereichArr[i].abkuerzung;
+                //oeffnen des loeschen buttons
+                $("#deleteInst").slideDown();
             } else {
                 alert("Fachbereich nicht vorhanden");
             }
@@ -75,10 +88,12 @@ $(document).ready(function () {
  * erstellt das Institut aus den gegebenen Angaben
  */
 function addFachbereich() {
+    //sammeln aller Informationen
     var name = document.getElementById("fachbereichName").value;
     var abk = document.getElementById("fachbereichAbkuerzung").value;
     var web = document.getElementById("fachbereichWebseite").value;
 
+    //Fehleranalyse
     if (name == "") { alert("bitte einen Namen eingeben"); }
     else if (abk == "") { alert("bitte Abkürzung wählen"); }
     else if (!isURL(web)) { alert("bitte korrekte URL angeben"); }
@@ -89,8 +104,8 @@ function addFachbereich() {
 }
 
 /**
- * fügt das Institut zur Datenbank hinzu
- * @param {JSON} object
+ * updatet den Fachbereich in der Datenbank
+ * @param {JSON} object aktualisierter Fachbereich
  */
 function editInDatabase(pObject) {
     var object = JSON.stringify(pObject);
@@ -108,32 +123,36 @@ function editInDatabase(pObject) {
     });
 }
 
+//getriggert wenn Fachbereich geloescht werden soll
 $(document).ready(function () {
     $("#deleteInst").click(function () {
         if (confirm("Fachbereich wirklich loeschen?")) {
             var object = { "abkuerzung": fachID };
+            //loeschen des Fachbereichs
             $.ajax({
                 type: 'POST',
                 data: object,
                 url: "/deleteFachbereich",
                 success: function () {
-                    alert("Fachbereich geloescht");
+                    //sammeln aller Institute
                     $.ajax({
                         type: 'GET',
                         url: "/getAllInstitutes",
                         success: function (data) {
+                            //suchen der Institute, die zu dem Fachbereich gehoeren
                             var institute = [];
                             for (var x in data) {
                                 if (data[x].data.features[0].properties.fachbereich == fachID)
                                     institute.push(data[x].ObjectID);
                             }
+                            //loeschen jeder Institute aus dem geloeschten Fachbereich
                             for (var x in institute) {
                                 $.ajax({
                                     type: 'POST',
                                     data: { "ObjectID": institute[x] },
                                     url: "/deleteInstitut",
                                     success: function () {
-                                        console.log(institute[x]);
+                                        
 
                                     },
                                     error: function () {
@@ -146,6 +165,7 @@ $(document).ready(function () {
                             alert('Institute sammeln fehlgeschlagen');
                         }
                     })
+                    alert("Fachbereich geloescht");
                 },
                 error: function () {
                     alert('Fachbereich loeschen fehlgeschlagen');
@@ -155,13 +175,7 @@ $(document).ready(function () {
     });
 });
 
-$(document).ready(function () {
-    $("#submitSearch").click(function () {
-        if (document.getElementById("searchInput").value != "") {
-            $("#deleteInst").slideDown();
-        }
-    });
-});
+
 
 
 var input = document.getElementById("searchInput");

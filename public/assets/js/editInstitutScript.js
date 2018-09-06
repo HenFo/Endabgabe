@@ -23,7 +23,6 @@ var Institute = L.featureGroup().addTo(map);
 var drawnItems = L.featureGroup().addTo(map);
 L.control.layers(null, {
     'Institute': Institute,
-    //'Mensen': Mensen,
 }, { position: 'topleft', collapsed: false }).addTo(map);
 
 map.addControl(new L.Control.Draw({
@@ -41,7 +40,8 @@ map.addControl(new L.Control.Draw({
     }
 }));
 
-
+//layer in der die gezeichneten features abgespeichert werden.
+//ACHTUNG: Nur das zuerst gezeichnete Feature wird bearbeitet
 var geoJsonLayers = {
     "type": "FeatureCollection",
     "features": []
@@ -54,11 +54,16 @@ map.on(L.Draw.Event.CREATED, function (event) {
     var layer = event.layer;
     var layerSwitch = layer.toGeoJSON();
     layerSwitch.geometry.coordinates = switchCoordinates(layerSwitch);
+    //layer vorne einfuegen, damit die aenderung uebernommen wird
     geoJsonLayers.features.unshift(layerSwitch);
     console.log(geoJsonLayers);
     Institute.addLayer(layer);
 });
 
+/**
+ * tauscht die Coordinaten in die richtige Reihenfolge
+ * @param {any} pLayer
+ */
 function switchCoordinates(pLayer) {
     var hCoor = pLayer.geometry.coordinates;
     var arr = [];
@@ -70,6 +75,10 @@ function switchCoordinates(pLayer) {
     return arr;
 }
 
+/**
+ * oeffnet/schliesst eine Liste mit der uebergebenen ID
+ * @param {any} listID Teil der Liste welches geoeffnet/geschlossen werden soll
+ */
 function toggleList(listID) {
     $("#" + listID).toggle();
 }
@@ -82,7 +91,7 @@ function toggleList(listID) {
 
 class Institut {
     /**
-     * Erstellt die Klasse Institut
+     * Erstellt ein Objekt der Klasse Institut
      * @param {String} pName
      * @param {String} pFachbereich
      * @param {String} pBildURL
@@ -95,6 +104,10 @@ class Institut {
         this.zGeometry = pGeometry;
     }
 
+    /**
+     * Macht aus sich selbst ein valides GeoJSON Objekt
+     * @returns Ein Institut als GeoJSON
+     */
     toGeoJSON() {
         var geoJSON = {
             "type": "FeatureCollection",
@@ -114,10 +127,13 @@ class Institut {
     }
 }
 
-var autoArr = [];
-var instituteArr = [];
-var instID = "";
+var autoArr = []; //Array fuer Autocomplete
+var instituteArr = []; //Array fuer die Institute
+var instID = ""; //ID des aktuell bearbeiteten Instituts
 
+/**
+ * Startet sobald die Seite aufgerufen wird
+ */
 window.onload = function () {
     $.ajax({
         type: 'GET',
@@ -134,23 +150,30 @@ window.onload = function () {
     });
 }
 
+//wird getriggert soblad der submit Button gedrueckt wird
 $(document).ready(function () {
     $("#submitSearch").click(function () {
         var hName = document.getElementById("searchInput").value;
         if (hName != "") {
+            //sucht nach dem geschten Institut
             var i = 0, flag = false;
             while (i < instituteArr.length && !flag) {
                 flag = instituteArr[i].data.features[0].properties.name == hName;
                 i++;
             }
+            //abfangen, dass das Institut nicht gefunden wurde
             if (i <= instituteArr.length) {
                 i--;
+                $("#deleteInst").slideDown();
+                //setzen der Attribute des zu bearbeitenden Instituts
                 $("#InstitutName").val(instituteArr[i].data.features[0].properties.name);
                 $("#fachbereichSelect").val(instituteArr[i].data.features[0].properties.fachbereich);
                 $("#InstitutBildURL").val(instituteArr[i].data.features[0].properties.image);
+                //Geometrie auf Karte anzeigen
                 var polygon = L.polygon(instituteArr[i].data.features[0].geometry.coordinates, {}).addTo(map);
                 Institute.addLayer(polygon);
                 geoJsonLayers.features.push(instituteArr[i].data.features[0]);
+                //zoomen zur geometrie
                 map.fitBounds(polygon.getBounds());
                 instID = instituteArr[i].ObjectID;
             } else {
@@ -161,7 +184,10 @@ $(document).ready(function () {
 });
 
 
-var hGeometryInput = 0;
+var hGeometryInput = 0; //Art der Geometrieeingabe
+/**
+ * bearbeitetes Institut der Datenbank hinzufuegen
+ */
 function addInstitut() {
     if (confirm("Aenderungen speichern?")) {
         var name = document.getElementById("InstitutName").value;
@@ -169,39 +195,44 @@ function addInstitut() {
         var img = document.getElementById("InstitutBildURL").value;
 
         if (fachbereich == "wähle Fachbereich") { alert("bitte Fachbereich auswählen"); }
+        else if (name == "") { alert("bitte Namen eingeben"); }
         else if (!isURL(img)) { alert("bitte korrekte URL angeben"); }
         else {
-
+            //waehlt die passende Verarbeitung der Geometrie
             switch (hGeometryInput) {
-                case 0:
+                case 0://bei manueller Eingabe
                     try {
                         if (geoJsonLayers.features.length > 0) {
-                            console.log(geoJsonLayers.features[0].geometry);
                             var institut = new Institut(name, fachbereich, img, geoJsonLayers.features[0].geometry);
+                            //Hinzufuegen zur Datenbank
                             saveToDatabase(institut.toGeoJSON());
                         } else { alert("bitte Geometrie zeichnen"); }
                     } catch (e) { alert(e) };
                     break;
-                case 1:
+                case 1://bei Eingabe ueber URL oder GeoJSON
                     try {
+                        //eingabe auswerten
                         var json = loadDoc();
+                        //gibt die passende Geometrie wieder, unabhaengig des GeoJSON Objekts
                         var geometry = returnGeometry(json);
                         var institut = new Institut(name, fachbereich, img, geometry);
-                        //console.log(institut.toGeoJSON());
-                        saveToDatabase(institut.toGeoJSON());
+                        //zur DB hinzufuegen
+                        addToDatabase(institut.toGeoJSON());
                     } catch (e) { alert(e) }
                     break;
                 default:
                     alert("Geometrie eingeben");
                     break;
             }
-            //document.getElementById("InstitutName").value = "";
-            //document.getElementById("fachbereichSelect").value = 1;
-            //document.getElementById("InstitutBildURL").value = "";
         }
     }
 }
 
+/**
+ * gibt die Geometrie eines GeoJSON Objekts wieder
+ * @param {JSON} pGeoJSON GeoJSON
+ * @returns Geometrie
+ */
 function returnGeometry(pGeoJSON) {
     if (pGeoJSON.type == "FeatureCollection") {
         return pGeoJSON.features[0].geometry;
@@ -241,36 +272,37 @@ function loadDoc() {
     }
 }
 
+/**
+ * updatet das Institut in der Datenbank
+ * @param {JSON} pObject bearbeitetes Institut
+ */
 function saveToDatabase(pObject) {
     var object = JSON.stringify(pObject);
-    //console.log(object);
-    console.log(pObject);
     $.ajax({
         type: 'POST',
         data: { "ObjectID": instID, "data": object },
         url: "/saveInstitut",
         success: function () {
+            //Institut in seinem Fachbereich aendern
             $.ajax({
                 type: 'POST',
                 data: { "data": object },
                 url: "/saveInstitutInFachbereich",
                 success: function () {
-                    alert('Institut in Fachbereich gespeichert');
+                    
                 },
                 error: function () {
                     alert('Institut speichern fehlgeschlagen');
                 }
             });
-            alert('Institut gespeichert');
         },
         error: function () {
             alert('Speichern fehlgeschlagen');
         }
     });
-
-    
 }
 
+//tauscht die Eingabemethoden
 $(document).ready(function () {
     $("#Bzeichnen").click(function () {
         $("#geoJSON").hide();
@@ -281,6 +313,7 @@ $(document).ready(function () {
     });
 });
 
+//tauscht die Eingabemethoden
 $(document).ready(function () {
     $("#Bcopy").click(function () {
         $("#mapEdit").hide();
@@ -291,29 +324,25 @@ $(document).ready(function () {
     });
 });
 
-$(document).ready(function () {
-    $("#submitSearch").click(function () {
-        if (document.getElementById("searchInput").value != "") {
-            $("#deleteInst").slideDown();
-        }
-    });
-});
 
-
+//loescht das zu bearbeitende Institut
 $(document).ready(function () {
     $("#deleteInst").click(function () {
         if (confirm("Institut wirklich loeschen?")) {
             var object = { "ObjectID": instID };
+            //Intstitut loeschen
             $.ajax({
                 type: 'POST',
                 data: object,
                 url: "/deleteInstitut",
                 success: function () {
+                    //hinzufuegen von mehr Informationen fuer weitere loeschaktionen
                     object = {
                         "ID": instID,
                         "name": $("#InstitutName").val(),
                         "fachbereich": $("#fachbereichSelect").val(),
                     };
+                    //loeschen des Instituts aus seinem Fachbereich
                     $.ajax({
                         type: 'POST',
                         data: object,

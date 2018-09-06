@@ -28,10 +28,13 @@ class Fachbereich {
  * erstellt das Institut aus den gegebenen Angaben
  */
 function addFachbereich() {
+    //sammeln der Informationen
     var name = document.getElementById("fachbereichName").value;
+    //abkuerzung wird wie Primaerschluessel behandelt
     var abk = document.getElementById("fachbereichAbkuerzung").value;
     var web = document.getElementById("fachbereichWebseite").value;
 
+    //Fehleranalyse
     if (name == "") { alert("bitte einen Namen eingeben"); }
     else if (abk == "") { alert("bitte Abkürzung wählen"); }
     else if (!isURL(web)) { alert("bitte korrekte URL angeben"); }
@@ -42,13 +45,14 @@ function addFachbereich() {
         document.getElementById("fachbereichAbkuerzung").value = "";
         document.getElementById("fachbereichWebseite").value = "";
 
+        //zur Datenbank hinzufuegen
         addToDatabase(hFachb.toJSON());
     }
 }
 
 /**
  * fügt das Institut zur Datenbank hinzu
- * @param {JSON} object
+ * @param {JSON} object Institut was hinzugefuegt werden soll
  */
 function addToDatabase(object) {
     $.ajax({

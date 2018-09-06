@@ -1,6 +1,5 @@
 "use strict";
 
-//https://openmensa.org/api/v2/canteens/?near[lat]=51.96&near[lng]=7.63
 
 class Mensa {
     /**
@@ -103,12 +102,10 @@ function getMensen() {
             for (var i = 0; i < data.length; i++) {
                 mensen.push(new Mensa(data[i].id, data[i].name, data[i].coordinates));
             }
-            //console.log(mensen);
             for (var i = 0; i < mensen.length; i++) {
                 getMeal(mensen[i], i);
-                //console.log(mensen[i].gerichte);
             }
-            
+
         },
         error: function (xhr) {
             alert(xhr.statusText);
@@ -130,6 +127,7 @@ function getMeal(pMensa, i) {
         hMonat = "0" + hMonat;
     if (hTag < 10)
         hTag = "0" + hTag;
+    //erfuellen der MensaAPI anforderung fuer ein Datum
     hHeute = hHeute.getFullYear() + "-" + hMonat + "-" + hTag;
 
     var hGerichte = [];

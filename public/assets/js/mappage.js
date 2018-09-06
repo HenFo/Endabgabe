@@ -31,6 +31,7 @@ L.control.layers({
     "satellite": satellite,
 }, null, { position: 'topright' }).addTo(map);
 
+//Route initialisieren
 var control = L.Routing.control({
     router: L.routing.mapbox(accessToken),
     waypoints: [
@@ -48,17 +49,25 @@ var control = L.Routing.control({
     //handleError(e);
 }).addTo(map);
 //control.hide(); //manchmal Probleme, dass die minimierte Version nicht angezeigt wird. Dann die Seite neu laden.
-//error control
 L.Routing.errorControl(control).addTo(map);
 
 
 class Route {
+    /**
+     * Erstellt ein Objekt der Klass Route
+     * @param {String} pName
+     * @param {any} pStart
+     * @param {any} pZiel
+     */
     constructor(pName, pStart, pZiel) {
         this.zName = pName;
         this.zStart = pStart;
         this.zZiel = pZiel;
     }
 
+    /**
+     * macht aus einem Routenobjekt ein JSON Objekt
+     */
     toJSON() {
         var json = {
             "name": this.zName,
@@ -70,10 +79,11 @@ class Route {
 }
 
 
-var instituteArr = [];
-var institutPopups = [];
+var instituteArr = [];//Array mit allen Instituten
+var institutPopups = [];//Array mit allen Popups fuer Institute
 
-var autoArr = [];
+var autoArr = [];//Array fuer die Autocompletefunktion
+//Verteilung der Inahlte im autoArr
 var autoArrDist = {
     "institute": 0,
     "routen": 0,
@@ -85,23 +95,29 @@ var autoArrDist = {
  * Startet sobald die Seite aufgerufen wird
  */
 window.onload = function () {
+    //sammelt alle Institute
     $.ajax({
         type: 'GET',
         url: "/getAllInstitutes",
         success: function (data) {
             for (var x in data) {
+                //Institute zu den Arrays hinzufuegen
                 instituteArr.push(data[x].data);
                 autoArr.push(data[x].data.features[0].properties.name);
+                //sammeln der Informationen zum erstellen eines Popups
                 var name = data[x].data.features[0].properties.name;
                 var fach = data[x].data.features[0].properties.fachbereich;
                 var img = data[x].data.features[0].properties.image;
                 var coord = data[x].data.features[0].geometry.coordinates;
+                //Geometrie auf der Garte
                 var polygon = L.polygon(coord, {}).addTo(map).bindPopup(createPopup(name, fach, img, coord[0]));
                 Institute.addLayer(polygon);
                 institutPopups.push(polygon);
             }
+            //festlegen bis zu welchem Index Institute in autoArr sind
             autoArrDist.institute = data.length;
 
+            //sammeln aller Routen
             $.ajax({
                 type: 'GET',
                 url: "/getAllRoutes",
@@ -109,8 +125,10 @@ window.onload = function () {
                     for (var x in data) {
                         autoArr.push(data[x].name);
                     }
+                    //festlegen bis zu welchem Index Routen in autoArr sind
                     autoArrDist.routen = data.length + autoArrDist.institute;
 
+                    //sammeln aller Fachbereiche
                     $.ajax({
                         type: 'GET',
                         url: "/getAllFachbereiche",
@@ -119,8 +137,9 @@ window.onload = function () {
                                 autoArr.push(data[x].name);
                                 autoArr.push(data[x].abkuerzung);
                             }
+                            //festlegen bis zu welchem Index Fachbereiche in autoArr sind
                             autoArrDist.fachbereiche = data.length * 2 + autoArrDist.routen;
-
+                            //sammeln aller Mensen
                             getMensen();
                         },
                         error: function (xhr) {
@@ -140,19 +159,16 @@ window.onload = function () {
 
 }
 
-//$(document).ajaxStop(function () {
-//    console.log(autoArrDist);
-//    console.log(autoArr);
-//    console.log(mensenPopup);
-//    mensenPopup[4].openPopup();
-//});
-
+//getriggert wenn der suchbutton betaetigt wird
 $(document).ready(function () {
     $("#submitSearch").click(function () {
+        //tabelle oeffnen
         $("#searchTable").show();
         document.getElementById("searchTable").innerHTML = "";
+        //suchbegriff
         var search = document.getElementById("searchInput").value.toLowerCase();
         if (search != "") {
+            //suchen aller Indizes, die auf die Eingabe passen
             var i = 0, res = [];
             while (i < autoArr.length) {
                 if (autoArr[i].toLowerCase().includes(search)) {
@@ -160,22 +176,32 @@ $(document).ready(function () {
                 }
                 i++;
             }
+            //evaluieren der gesammelten indizes
             for (var x in res) {
+                //false wenn im Bereich der Institute
                 if (res[x].index >= autoArrDist.institute) {
+                    //false wenn im Bereich der Routen
                     if (res[x].index >= autoArrDist.routen) {
+                        //false wenn im Bereich der Fachbereiche
                         if (res[x].index >= autoArrDist.fachbereiche) {
+                            //false wenn im Bereich der Mensen
                             if (res[x].index >= autoArrDist.mensen) {
+                                //wenn es zu einem Fehler bei der Suche kam
                                 alert("Fehler bei der Suche: Kein Ergebnis");
                             } else {
+                                //findet die passende Mensa
                                 findMensa(res[x].data);
                             }
                         } else {
+                            //findet den passenden Fachbereich
                             findFachbereich(res[x].data);
                         }
                     } else {
+                        //findet die passende Route
                         findRoute(res[x].data);
                     }
                 } else {
+                    //findet das passende Institut
                     findInstitut(res[x].data);
                 }
             }
@@ -183,27 +209,41 @@ $(document).ready(function () {
     })
 })
 
+/**
+ * Findet ein Institut anhand seines Namens
+ * @param {String} pName Name des Instituts
+ */
 function findInstitut(pName) {
+    //sucht das Institut
     var i = 0, flag = false, hInst = { "institut": null, "index": null };
     while (i < instituteArr.length && !flag) {
         flag = instituteArr[i].features[0].properties.name == pName;
         i++
     }
-    hInst.institut = instituteArr[i-1];
-    hInst.index = i-1;
+    hInst.institut = instituteArr[i - 1];
+    //Index an dem das Institut sich befindet 
+    hInst.index = i - 1;
+    //generiert einen Teil der Ergebnisliste
     generateList(hInst, 0);
 }
 
+/**
+ * sucht ein Fachbereich anhand des Namens oder der Abkuerzung
+ * @param {any} pName Name oder Kuerzel des Fachbereiches
+ */
 function findFachbereich(pName) {
+    //entscheiden, ob es ein Name oder ein Kuerzel ist
     if (pName.includes("FB"))
         var data = { "abkuerzung": pName };
     else
         var data = { "name": pName };
+    //holt den gesuchten Fachbereich aus der DB
     $.ajax({
         type: 'POST',
         data: data,
         url: "/findFachbereich",
         success: function (data) {
+            //generiert eine Teil der Ergebnisliste
             generateList(data, 1);
         },
         error: function (xhr) {
@@ -212,12 +252,17 @@ function findFachbereich(pName) {
     });
 }
 
+/**
+ * sucht eine Route anhand dessen Namen in der DB
+ * @param {String} pName Name der Route
+ */
 function findRoute(pName) {
     $.ajax({
         type: 'POST',
         data: { "name": pName },
         url: "/findRoute",
         success: function (data) {
+            //generiert eine Teil der Ergebnisliste
             generateList(data, 2);
         },
         error: function (xhr) {
@@ -226,25 +271,44 @@ function findRoute(pName) {
     });
 }
 
+/**
+ * sucht eine Mensa anhand dessen Namen
+ * @param {String} pName Name der Mensa
+ */
 function findMensa(pName) {
+    //suchen nach der Mensa
     var i = 0, flag = false;
     while (i < mensen.length && !flag) {
         flag = mensen[i].name === pName;
         i++
     }
+    //generiert eine Teil der Ergebnisliste
     generateList({ "mensa": mensen[i-1], "index": i-1 }, 3);
 }
 
+/**
+ * Oeffnet das Popup der Institute nach der ID
+ * @param {any} pID ID fuer das zugehoerige Institut
+ */
 function openInformation(pID) {
     institutPopups[pID].openPopup();
 }
 
+/**
+ * zeigt eine Route auf der Karte
+ * @param {any} pData Daten der Route
+ */
 function showOnMap(pData) {
     $("#routeButtons").slideDown();
     control.spliceWaypoints(0, 1, pData.start);
     control.spliceWaypoints(control.getWaypoints().length - 1, 1, pData.ziel);
 }
 
+/**
+ * generiert die Ergebnisliste
+ * @param {any} data individuelle Daten zum erstellen der verschiedenen Arten der Liste
+ * @param {number} type art der Eingabe 0:Institut 1:Fachbereich 2:routen 3:Mensen
+ */
 function generateList(data, type) {
     var html = "";
     switch (type) {
@@ -275,14 +339,20 @@ function generateList(data, type) {
     }
 }
 
+/**
+ * loescht eine Route
+ * @param {String} pRoutenName Name der zu loeschenden Route
+ */
 function deleteRoute(pRoutenName) {
     if (confirm("Route sicher loeschen?!")) {
+        //loesche Route aus DB
         $.ajax({
             type: 'POST',
             data: { "ObjectID": pRoutenName.ID },
             url: "/deleteRoute",
             success: function (data) {
                 alert("Route wurde geloescht!");
+                //Seite neu laden
                 location.reload();
             },
             error: function (xhr) {
@@ -292,26 +362,34 @@ function deleteRoute(pRoutenName) {
     }
 }
 
+/**
+ * bearbeitet die Route
+ * @param {String} pRoutenName Name der zu bearbeitenden Route
+ */
 function editRoute(pRoutenName) {
     if (confirm("Route sicher aendern?!")) {
+        //Neue Werte sammeln
         var start = {
             "lat": control.getWaypoints()[0].latLng.lat, "lng": control.getWaypoints()[0].latLng.lng
         };
         var ziel = {
             "lat": control.getWaypoints()[control.getWaypoints().length - 1].latLng.lat, "lng": control.getWaypoints()[control.getWaypoints().length - 1].latLng.lng
         };
+        //generieren einer neuen Route
         var object = new Route(pRoutenName.name, start, ziel);
         object = object.toJSON();
         object = JSON.stringify(object);
         object = { "ObjectID": "route" + pRoutenName.name, "data": object };
-        console.log(object);
+        //aktualisieren der Route in der DB
         $.ajax({
             type: 'POST',
             data: object,
             url: "/editRoute",
             success: function (data) {
                 document.getElementById("searchTable").innerHTML = "";
+                //Route auf der Karte anzeigen
                 showOnMap({ "start": start, "ziel": ziel });
+                //aktualisierte Route in der Liste anzeigen
                 findRoute(pRoutenName.name);
                 alert("Route " + pRoutenName.name + " wurde bearbeitet!");
             },
@@ -334,16 +412,24 @@ function createPopup(pName, pFach, pBild, pPos) {
     return str;
 }
 
+//getriggert wenn der Route Speichern Button gedrueckt wird
 $(document).ready(function () {
     $("#routeButton").click(function () {
+        //checkt ob Route vorhanden ist
         if (checkRoute()) {
+            //Wenn das Attribut "name" im Button fehlt, so ist er in Zustand 1
             if (!document.getElementById("routeButton").hasAttribute("name")) {
+                //aendern des Buttoninhalts
                 $("#routeButton").html("<b>Speichern!</b>")
                 $('#routeButton').attr('name', '');
+                //oeffnen der Nameneingabe fuer die Route
                 $("#routeName").slideDown();
-            } else {
+            } else { //Wenn Button in Zustand 2
+                //Wenn Routenname eingegeben
                 if (document.getElementById("routeName").value != "") {
+                    //route Speichern
                     saveRoute();
+                    //Button zurueck auf Zustand 1
                     document.getElementById("routeName").value = ""
                     $("#routeButton").html("aktuelle Route speichern")
                     $('#routeButton').removeAttr("name");
@@ -358,8 +444,11 @@ $(document).ready(function () {
     });
 });
 
-
+/**
+ * Speichert eine Route ab
+ */
 function saveRoute() {
+    //sammeln der Informationen
     var name = document.getElementById("routeName").value;
     var start = {
         "lat": control.getWaypoints()[0].latLng.lat, "lng": control.getWaypoints()[0].latLng.lng
@@ -370,13 +459,16 @@ function saveRoute() {
     var object = new Route(name, start, ziel);
     object = object.toJSON();
     object = JSON.stringify(object);
+    //ObjectID zum ansorecchen der Route in der DB
     object = { "ObjectID": "route" + name, "data": object };
+    //Route hinzufuegen
     $.ajax({
         type: 'POST',
         data: object,
         url: "/addRoute",
         success: function () {
             alert('Route gespeichert');
+            //einfuegen der Route in alle Arrays, damit es nicht neu gesucht werden muss
             autoArr.splice(autoArrDist.routen, 0, name);
             autoArrDist.routen++;
             autoArrDist.fachbereiche++;
