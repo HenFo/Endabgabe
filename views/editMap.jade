@@ -1,0 +1,58 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title Institut
+    link(rel='stylesheet', href='../assets/bootstrap/css/bootstrap.min.css')
+    link(rel='stylesheet', href='../assets/stylesheets/stylesheet.css')
+    link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i')
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+    script(src='https://code.jquery.com/ui/1.8.24/jquery-ui.min.js')
+  body
+    nav.navbar.navbar-light.navbar-expand-lg.bg-white.clean-navbar.shadow
+      .container
+        a.navbar-brand.logo(href='/') Karte der WWU
+        button.navbar-toggler(data-toggle='collapse', data-target='#navcol-1')
+          span.sr-only Toggle navigation
+          span.navbar-toggler-icon
+        #navcol-1.collapse.navbar-collapse
+          ul.nav.navbar-nav.ml-auto
+            li.nav-item(role='presentation')
+              a.nav-link(href='/') Home
+            li.nav-item(role='presentation')
+              a.nav-link(href='/institute/index') Institute
+            li.nav-item(role='presentation')
+              a.nav-link(href='/mensen/index') Mensen
+            li.nav-item(role='presentation')
+              a.nav-link(href='/fachbereich/index') Fachbereiche
+            li.nav-item(role='presentation')
+              a.nav-link.aktiv(href='/editMap/index') Edit map
+    main.page.landing-page
+      .container-fluid
+        .row(style='padding-left:10px')
+          .col-sm-4.itemColum
+            #editingOptions.editingOptions
+              #fachbereich
+                h2.editingOptions Fachbereiche:
+                a.a-edit(href='/createFachbereich/fachbereich') Fachbereich <i class="fa fa-plus"></i>
+                br
+                a.a-edit(href='/editFachbereich/fachbereich') Fachbereich <i class="fa fa-pencil"></i>
+                br
+              #institute
+                h2.editingOptions Institute:
+                a.a-edit(href='/createInstitut/institute') Institut <i class="fa fa-plus"></i>
+                br
+                a.a-edit(href='/editInstitut/institute') Institut <i class="fa fa-pencil"></i>
+                br
+          .col-sm-8.mapCol
+            h2 Bitte wähle eine der Optionen auf der linken Seite
+    footer.page-footer.dark(style='padding-top: 10px;')
+      .footer-copyright(style='margin-top: 5px;')
+        p © 2018 Henry Fock
+    script(src='../assets/js/jquery.min.js')
+    script(src='../assets/bootstrap/js/bootstrap.min.js')
+    script(src='../assets/js/theme.js')
+    // <script src="../assets/js/mappageEdit.js"></script>
+    // <script src="../assets/js/formularInstitutScript.js"></script>

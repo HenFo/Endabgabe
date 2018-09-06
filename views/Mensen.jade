@@ -1,0 +1,37 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title Mensen
+    link(rel='stylesheet', href='../assets/bootstrap/css/bootstrap.min.css')
+    link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i')
+    link(rel='stylesheet', href='../assets/stylesheets/stylesheet.css')
+  body
+    nav.navbar.navbar-light.navbar-expand-lg.bg-white.clean-navbar.shadow
+      .container
+        a.navbar-brand.logo(href='#') Karte der WWU
+        button.navbar-toggler(data-toggle='collapse', data-target='#navcol-1')
+          span.sr-only Toggle navigation
+          span.navbar-toggler-icon
+        #navcol-1.collapse.navbar-collapse
+          ul.nav.navbar-nav.ml-auto
+            li.nav-item(role='presentation')
+              a.nav-link(href='/') Karte
+            li.nav-item(role='presentation')
+              a.nav-link(href='/institute/index') Institute
+            li.nav-item(role='presentation')
+              a.nav-link(href='/mensen/index') Mensen
+            li.nav-item(role='presentation')
+              a.nav-link(href='/fachbereich/index') Fachbereiche
+            li.nav-item(role='presentation')
+              a.nav-link(href='/editMap/index') Edit map
+    main.page
+      table#MensaGerichte.table
+    footer.page-footer.dark
+      .footer-copyright(style='margin-top:0;')
+        p © 2018 Henry Fock
+    script(src='../assets/js/jquery.min.js')
+    script(src='../assets/bootstrap/js/bootstrap.min.js')
+    script(src='../assets/js/theme.js')
+    script(src='../assets/js/mensenHtml.js')

@@ -1,5 +1,5 @@
 {
-  "name": "nodetest1",
+  "name": "Endabgabe",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -11,6 +11,8 @@
     "express": "~4.16.0",
     "http-errors": "~1.6.2",
     "jade": "~1.11.0",
+    "jsnlog": "^2.28.0",
+    "jsnlog-nodejs": "^2.28.0",
     "mongodb": "^3.0.5",
     "monk": "^6.0.5",
     "morgan": "~1.9.0"

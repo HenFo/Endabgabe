@@ -3,25 +3,17 @@ html
   head
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
-    title Karte
-    link(rel='stylesheet', href='assets/bootstrap/css/bootstrap.min.css')
+    title Institute
+    link(rel='stylesheet', href='../assets/bootstrap/css/bootstrap.min.css')
     link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i')
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
     link(rel='stylesheet', href='https://unpkg.com/leaflet@1.3.1/dist/leaflet.css', integrity='sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==', crossorigin='')
     script(src='https://unpkg.com/leaflet@1.3.1/dist/leaflet.js', integrity='sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw==', crossorigin='')
-    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
-    script(src='https://code.jquery.com/ui/1.8.24/jquery-ui.min.js')
-    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css')
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js')
     script(src='https://api.mapbox.com/mapbox-gl-js/v0.46.0/mapbox-gl.js')
     link(href='https://api.mapbox.com/mapbox-gl-js/v0.46.0/mapbox-gl.css', rel='stylesheet')
     script(src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js')
     link(href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css', rel='stylesheet')
-    link(rel='stylesheet', href='assets/stylesheets/leaflet-routing-machine.css')
-    script(src='assets/js/leaflet-routing-machine.js')
-    link(rel='stylesheet', href='assets/js/leaflet-control-geocoder-1.6.0/dist/Control.Geocoder.css')
-    script(src='assets/js/leaflet-control-geocoder-1.6.0/dist/Control.Geocoder.js')
-    link(rel='stylesheet', href='assets/stylesheets/stylesheet.css')
+    link(rel='stylesheet', href='../assets/stylesheets/stylesheet.css')
   body
     nav.navbar.navbar-light.navbar-expand-lg.bg-white.clean-navbar.shadow
       .container
@@ -41,30 +33,25 @@ html
               a.nav-link(href='/fachbereich/index') Fachbereiche
             li.nav-item(role='presentation')
               a.nav-link(href='/editMap/index') Edit map
-    main.page
+    main.page.pricing-table-page
       .container-fluid
         .row(style='padding-left:10px')
-          .col-sm-3.itemColum
+          .col-sm-4.itemColum
             #Umgebung.gps
-              button#gpsButton.btn.red(onclick='getPosition()', type='button')
-                | Orte mich! 
-                i.fa.fa-crosshairs
-              button.btn.orange(type='button', style='margin-top:10px', onclick='routeToNextMensa()') zur naechsten Mensa
-              button#routeButton.btn.route(type='button') aktuelle Route speichern
-              input#routeName.textfeld.search(type="text" placeholder="Name der Route" name="Routenname" style='display:none')
-              .searchSection.autocomplete
-                input#searchInput.textfeld.search(type="text" placeholder="Search.." name="search" autocomplete="off")
-                button#submitSearch.submit(type='button' value='Suchen')
-                  i.fa.fa-search
-              ul#searchTable
-          .col-sm-9.mapCol
+              #institute
+                h2.editingOptions Institute:
+                a.a-edit(href='/createInstitut/institute') Institut <i class="fa fa-plus"></i>
+                br
+                a.a-edit(href='/editInstitut/institute') Institut <i class="fa fa-pencil"></i>
+                br
+                button.a-edit(onclick='clearInstitutCollection()') Alle Institute loeschen
+                ul#InstituteTable
+          .col-sm-8.mapCol
             #map.map
-    footer.page-footer.dark(style='padding-top: 10px;')
-      .footer-copyright(style='margin-top: 5px;')
+    footer.page-footer.dark
+      .footer-copyright(style='margin-top:0;')
         p © 2018 Henry Fock
-    script(src='assets/js/jquery.min.js')
-    script(src='assets/bootstrap/js/bootstrap.min.js')
-    script(src='assets/js/theme.js')
-    script(src='assets/js/mappage.js')
-    script(src='assets/js/mensen.js')
-    script(src='assets/js/autocomplete.js')
+    script(src='../assets/js/jquery.min.js')
+    script(src='../assets/bootstrap/js/bootstrap.min.js')
+    script(src='../assets/js/theme.js')
+    script(src='../assets/js/instituteHtml.js')
