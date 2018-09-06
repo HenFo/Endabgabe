@@ -35,6 +35,11 @@ a:active {
     color: white;
 }
 
+#deleteInst.red {
+    width:20%;
+    margin-bottom:10px;
+    display:none;
+}
 .mapCol {
 }
 
@@ -275,6 +280,7 @@ li.instList:not(:last-child) {
 
 .lists, .fachSearchList {
     border-bottom: 1px solid #f1f1f1;
+    margin-bottom:3px;
 }
 
 .a-edit {
@@ -328,16 +334,21 @@ li.instList:not(:last-child) {
     border-radius: 10px;
 }
 
-.routeEdit {
+/*.routeEdit {
     background-color: #ff5050;
     width: 49%;
     color: white;
     margin: 10px 1px  0px;
     height:60px;
+}*/
+.routeEdit {
+    float:right;
+    background-color:transparent;
+    border:none;
 }
 
     .routeEdit:hover {
-        color: white;
+        color: black;
     }
 
 @media only screen and (max-width: 450px) {

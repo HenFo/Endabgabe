@@ -48,11 +48,17 @@ html
                   a.a-edit(href='/editInstitut/institute') Institut <i class="fa fa-pencil"></i>
                   br
           .col-sm-9.mapCol
+            .searchSection.autocomplete(style="border-top:none")
+                input#searchInput.textfeld.search(type="text" placeholder="Search.." name="search" autocomplete="off" autofocus='')
+                button#submitSearch.submit(type='button' value='Suchen')
+                  i.fa.fa-search
+            button#deleteInst.btn.red Institut 
+              i.fa.fa-trash-o
             #fachbereichForm
               h3 Name des Fachbereiches
-              input#fachbereichName.textfeld(type='text', placeholder='Name des Fachbereiches', autofocus='')
+              input#fachbereichName.textfeld(type='text', placeholder='Name des Fachbereiches', )
               h3 Abkürzung
-              input#fachbereichAbkuerzung.textfeld(type='text', placeholder='z.B. FB14', maxlength='4')
+              input#fachbereichAbkuerzung.textfeld(type='text', placeholder='z.B. FB14', maxlength='4' disabled)
               h3 Webseite
               input#fachbereichWebseite.textfeld(type='url', placeholder='Adresse der Webseite')
               br
@@ -64,4 +70,5 @@ html
     script(src='../assets/js/jquery.min.js')
     script(src='../assets/bootstrap/js/bootstrap.min.js')
     script(src='../assets/js/theme.js')
-    script(src='../assets/js/formularfachbereichScript.js')
+    script(src='../assets/js/editFachbereichScript.js')
+    script(src='../assets/js/autocomplete.js')

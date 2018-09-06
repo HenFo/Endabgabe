@@ -90,14 +90,12 @@ function getMeal(pMensa) {
                 var gericht = new Gericht(data[j].id, pMensa.name, data[j].name, data[j].prices);
                 hGerichte.push(gericht);
             }
-            //console.log(hGerichte);
             var popUp = generatePopUp(hGerichte);
             var marker = L.marker(pMensa.coordinaten).addTo(map).bindPopup("<h5>" + pMensa.name + "</h5>" + popUp + "<br/><button class='btn popup' onclick='toDestination(" + pMensa.coordinaten + ")'>Zu dieser Mensa navigieren</button>");
             Mensen.addLayer(marker);
             mensenPopup.push(marker);
             mensen.push(pMensa);
             autoArr.push(pMensa.name);
-            console.log(pMensa.name);
         },
         error: function (xhr) {
             var marker = L.marker(pMensa.coordinaten).addTo(map).bindPopup("<h5>" + pMensa.name + "</h5><table><tr><td>Keine Daten zu den Gerichten</td></tr></table> <br/><button class='btn popup' onclick='toDestination(" + pMensa.coordinaten + ")'>Zu dieser Mensa navigieren</button>");
@@ -105,8 +103,6 @@ function getMeal(pMensa) {
             mensenPopup.push(marker);
             mensen.push(pMensa);
             autoArr.push(pMensa.name);
-            console.log(pMensa.name);
-            //console.log("kein Gericht gefunden");
         }
     });
 }
