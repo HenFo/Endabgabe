@@ -6,7 +6,12 @@
 .navbar {
     padding: 10px 0px;
 }
-
+/*.navbar-brand.logo {
+    background-image: url('https://www.uni-muenster.de/imperia/md/images/allgemein/farbunabhaengig/wwu.svg');
+    background-position: left;
+    background-size: 200px;
+    background-repeat: no-repeat;
+}*/
 a:active {
     font-weight: bold;
     color: black;
@@ -36,10 +41,11 @@ a:active {
 }
 
 #deleteInst.red {
-    width:20%;
-    margin-bottom:10px;
-    display:none;
+    width: 20%;
+    margin-bottom: 10px;
+    display: none;
 }
+
 .mapCol {
 }
 
@@ -78,12 +84,24 @@ a:active {
     margin-bottom: 10px;
 }
 
-h3, h2 {
-    font-size: 15px;
+h3 {
+    font-size: 17px;
     font-weight: bold;
     margin-left: 5px;
 }
 
+.titel {
+    text-align: center;
+    margin: auto;
+    height: 100%;
+    width: 100%;
+}
+.startImage {
+    width:100%;
+}
+.fachImage {
+    max-height:100px;
+}
 .editingOptions {
     margin-top: 10px;
 }
@@ -280,13 +298,18 @@ li.instList:not(:last-child) {
 
 .lists, .fachSearchList {
     border-bottom: 1px solid #f1f1f1;
-    margin-bottom:3px;
+    margin-bottom: 3px;
 }
 
 .a-edit {
     margin-left: 25px;
     color: black;
 }
+
+    .a-edit:hover {
+        color: black;
+        font-size: 18px;
+    }
 
 .tableFachInst {
     display: none;
@@ -334,17 +357,14 @@ li.instList:not(:last-child) {
     border-radius: 10px;
 }
 
-/*.routeEdit {
-    background-color: #ff5050;
-    width: 49%;
-    color: white;
-    margin: 10px 1px  0px;
-    height:60px;
-}*/
+#subject.textfeld {
+    width: 100%;
+}
+
 .routeEdit {
-    float:right;
-    background-color:transparent;
-    border:none;
+    float: right;
+    background-color: transparent;
+    border: none;
 }
 
     .routeEdit:hover {

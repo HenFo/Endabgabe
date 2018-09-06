@@ -20,35 +20,41 @@ html
   body
     nav.navbar.navbar-light.navbar-expand-lg.bg-white.clean-navbar.shadow
       .container
-        a.navbar-brand.logo(href='#') Karte der WWU
+        a.navbar-brand.logo(href='/') Karte der WWU
         button.navbar-toggler(data-toggle='collapse', data-target='#navcol-1')
           span.sr-only Toggle navigation
           span.navbar-toggler-icon
         #navcol-1.collapse.navbar-collapse
           ul.nav.navbar-nav.ml-auto
             li.nav-item(role='presentation')
-              a.nav-link(href='/') Karte
-            li.nav-item(role='presentation')
-              a.nav-link(href='/institute/index') Institute
+              a.nav-link(href='/karte') Karte
             li.nav-item(role='presentation')
               a.nav-link(href='/mensen/index') Mensen
             li.nav-item(role='presentation')
+              a.nav-link(href='/institute/index') Institute
+            li.nav-item(role='presentation')
               a.nav-link(href='/fachbereich/index') Fachbereiche
             li.nav-item(role='presentation')
-              a.nav-link(href='/editMap/index') Edit map
+              a.nav-link.aktiv(href='/impressum/index') Impressum
     main.page
       .container-fluid
         .row(style='padding-left:10px')
           .col-md-2.itemColum
             #fachbereich
-              h2.editingOptions Fachbereiche:
+              h3.editingOptions Fachbereiche:
               a.a-edit(href='/createFachbereich/fachbereich') Fachbereich <i class="fa fa-plus"></i>
               br
               a.a-edit(href='/editFachbereich/fachbereich') Fachbereich <i class="fa fa-pencil"></i>
               br
+            #institute
+              h3.editingOptions Institute:
+              a.a-edit(href='/createInstitut/institute') Institut <i class="fa fa-plus"></i>
+              br
+              a.a-edit(href='/editInstitut/institute') Institut <i class="fa fa-pencil"></i>
+              br
           .col-md-10.mapCol
             table#Fachbereiche.table
-    footer.page-footer.dark(style='padding-top: 10px;')
+    footer#fachbereichFooter.page-footer.dark(style='padding-top: 10px;')
       .footer-copyright(style='margin-top: 5px;')
         p © 2018 Henry Fock
     script(src='../assets/js/jquery.min.js')

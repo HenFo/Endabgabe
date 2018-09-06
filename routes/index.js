@@ -6,7 +6,11 @@ var jsnlog_nodejs = require('jsnlog-nodejs').jsnlog_nodejs;
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    res.render('index', { title: 'Karte der WWU' });
+    res.render('index', { title: 'Startseite' });
+});
+
+router.get('/karte', function (req, res, next) {
+    res.render('karte', { title: 'Karte der WWU' });
 });
 
 router.get('/Mensen/index', function (req, res) {
@@ -25,8 +29,8 @@ router.get('/institute/index', function (req, res) {
     res.render('institute', { title: 'Institute' });
 })
 
-router.get('/editMap/index', function (req, res) {
-    res.render('editMap', { title: 'Karte bearbeiten' });
+router.get('/impressum/index', function (req, res) {
+    res.render('impressum', { title: 'Impressum' });
 })
 
 router.get('/createFachbereich/fachbereich', function (req, res) {

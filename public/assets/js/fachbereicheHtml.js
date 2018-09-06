@@ -46,7 +46,7 @@ function generateHtml(pFachbereich) {
     var str = "<tr ><td>" + pFachbereich.name + "</td>" + "<td>" + pFachbereich.abkuerzung + "</td><td><a href='url'>" + pFachbereich.webseite + "</a></td><td><button class='btn scrollDown' onclick='showTable(" + ids + ")'><span class='iconPos'><i class='fa fa-arrow-right'></i></span></button></tr>";
     str += "<tbody id='" + ids + "' class='tableFachInst'><tr><th colspan='2'>Institute</th><th colspan='2'>Bild</th></tr>"
     for (var x in pFachbereich.institute) {
-        str += "<tr><td colspan='2'>" + pFachbereich.institute[x].name + "</td><td colspan='2'><img src='" + pFachbereich.institute[x].image + "'/></td></tr>"
+        str += "<tr><td colspan='2'>" + pFachbereich.institute[x].name + "</td><td colspan='2'><img class='fachImage' src='" + pFachbereich.institute[x].image + "'/></td></tr>"
     }
     ids++;
     return str += "</tbody>";

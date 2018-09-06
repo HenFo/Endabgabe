@@ -17,34 +17,39 @@ html
   body
     nav.navbar.navbar-light.navbar-expand-lg.bg-white.clean-navbar.shadow
       .container
-        a.navbar-brand.logo(href='#') Karte der WWU
+        a.navbar-brand.logo(href='/') Karte der WWU
         button.navbar-toggler(data-toggle='collapse', data-target='#navcol-1')
           span.sr-only Toggle navigation
           span.navbar-toggler-icon
         #navcol-1.collapse.navbar-collapse
           ul.nav.navbar-nav.ml-auto
             li.nav-item(role='presentation')
-              a.nav-link(href='/') Karte
-            li.nav-item(role='presentation')
-              a.nav-link(href='/institute/index') Institute
+              a.nav-link(href='/karte') Karte
             li.nav-item(role='presentation')
               a.nav-link(href='/mensen/index') Mensen
             li.nav-item(role='presentation')
+              a.nav-link(href='/institute/index') Institute
+            li.nav-item(role='presentation')
               a.nav-link(href='/fachbereich/index') Fachbereiche
             li.nav-item(role='presentation')
-              a.nav-link(href='/editMap/index') Edit map
+              a.nav-link.aktiv(href='/impressum/index') Impressum
     main.page.pricing-table-page
       .container-fluid
         .row(style='padding-left:10px')
           .col-sm-4.itemColum
             #Umgebung.gps
               #institute
-                h2.editingOptions Institute:
+                h3.editingOptions Institute:
                 a.a-edit(href='/createInstitut/institute') Institut <i class="fa fa-plus"></i>
                 br
                 a.a-edit(href='/editInstitut/institute') Institut <i class="fa fa-pencil"></i>
                 br
-                button.a-edit(onclick='clearInstitutCollection()') Alle Institute loeschen
+              #fachbereich
+                h3.editingOptions Fachbereiche:
+                a.a-edit(href='/createFachbereich/fachbereich') Fachbereich <i class="fa fa-plus"></i>
+                br
+                a.a-edit(href='/editFachbereich/fachbereich') Fachbereich <i class="fa fa-pencil"></i>
+                br
                 ul#InstituteTable
           .col-sm-8.mapCol
             #map.map

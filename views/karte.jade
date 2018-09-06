@@ -3,9 +3,8 @@ html
   head
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
-    title Institut
-    link(rel='stylesheet', href='../assets/bootstrap/css/bootstrap.min.css')
-    link(rel='stylesheet', href='../assets/stylesheets/stylesheet.css')
+    title Karte
+    link(rel='stylesheet', href='assets/bootstrap/css/bootstrap.min.css')
     link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i')
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
     link(rel='stylesheet', href='https://unpkg.com/leaflet@1.3.1/dist/leaflet.css', integrity='sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==', crossorigin='')
@@ -18,6 +17,11 @@ html
     link(href='https://api.mapbox.com/mapbox-gl-js/v0.46.0/mapbox-gl.css', rel='stylesheet')
     script(src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js')
     link(href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css', rel='stylesheet')
+    link(rel='stylesheet', href='assets/stylesheets/leaflet-routing-machine.css')
+    script(src='assets/js/leaflet-routing-machine.js')
+    link(rel='stylesheet', href='assets/js/leaflet-control-geocoder-1.6.0/dist/Control.Geocoder.css')
+    script(src='assets/js/leaflet-control-geocoder-1.6.0/dist/Control.Geocoder.js')
+    link(rel='stylesheet', href='assets/stylesheets/stylesheet.css')
   body
     nav.navbar.navbar-light.navbar-expand-lg.bg-white.clean-navbar.shadow
       .container
@@ -37,52 +41,30 @@ html
               a.nav-link(href='/fachbereich/index') Fachbereiche
             li.nav-item(role='presentation')
               a.nav-link.aktiv(href='/impressum/index') Impressum
-    main.page.landing-page
+    main.page
       .container-fluid
         .row(style='padding-left:10px')
           .col-sm-3.itemColum
-            #editingOptions.editingOptions
-              #editingOptions.editingOptions
-                #fachbereich
-                  h3.editingOptions Fachbereiche:
-                  a.a-edit(href='/createFachbereich/fachbereich') Fachbereich <i class="fa fa-plus"></i>
-                  br
-                  a.a-edit(href='/editFachbereich/fachbereich') Fachbereich <i class="fa fa-pencil"></i>
-                  br
-                #institute
-                  h3.editingOptions Institute:
-                  a.a-edit(href='/createInstitut/institute') Institut <i class="fa fa-plus"></i>
-                  br
-                  a.a-edit(href='/editInstitut/institute') Institut <i class="fa fa-pencil"></i>
-                  br
+            #Umgebung.gps
+              button#gpsButton.btn.red(onclick='getPosition()', type='button')
+                | Orte mich! 
+                i.fa.fa-crosshairs
+              button.btn.orange(type='button', style='margin-top:10px', onclick='routeToNextMensa()') zur naechsten Mensa
+              button#routeButton.btn.route(type='button') aktuelle Route speichern
+              input#routeName.textfeld.search(type="text" placeholder="Name der Route" name="Routenname" style='display:none')
+              .searchSection.autocomplete
+                input#searchInput.textfeld.search(type="text" placeholder="Search.." name="search" autocomplete="off")
+                button#submitSearch.submit(type='button' value='Suchen')
+                  i.fa.fa-search
+              ul#searchTable
           .col-sm-9.mapCol
-            #institutForm
-              h3 Name des Institutes
-              input#InstitutName.textfeld(type='text', placeholder='Name des Institutes', autofocus='')
-              h3 Fachbereich
-              select#fachbereichSelect.textfeld(style='width:auto')
-                option(value='1') wähle zugehörigen Fachbereich
-                each val in fachbereiche 
-                  option= val.abkuerzung
-              h3 Bild
-              input#InstitutBildURL.textfeld(type='url', placeholder='Bild-URL einfügen')
-              h3
-                | Geometrie hinzufügen: 
-                br
-                |  wähle aus folgenden Optionen:
-              button#Bzeichnen.btn.options(disabled='') Geometrie zeichnen
-              button#Bcopy.btn.options GeoJSON per Kopie oder URL
-              br
-              div
-                br
-                #mapEdit.map
-                textarea#geoJSON.geoJSON.textfeld(placeholder='hier den Link oder das GeoJSON Objekt einfügen')
-                br
-              button#addInstitut.btn.green(type='submit', onclick='addInstitut()') Submit
+            #map.map
     footer.page-footer.dark(style='padding-top: 10px;')
       .footer-copyright(style='margin-top: 5px;')
         p © 2018 Henry Fock
-    script(src='../assets/js/jquery.min.js')
-    script(src='../assets/bootstrap/js/bootstrap.min.js')
-    script(src='../assets/js/theme.js')
-    script(src='../assets/js/formularInstitutScript.js')
+    script(src='assets/js/jquery.min.js')
+    script(src='assets/bootstrap/js/bootstrap.min.js')
+    script(src='assets/js/theme.js')
+    script(src='assets/js/mappage.js')
+    script(src='assets/js/mensen.js')
+    script(src='assets/js/autocomplete.js')
