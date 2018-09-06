@@ -132,6 +132,20 @@ function generateHtml(pInstitut, pID) {
     return str;
 }
 
+function clearInstitutCollection() {
+    $.ajax({
+        type: 'POST',
+        data: null,
+        url: "/clearInstitut",
+        success: function () {
+            alert('alle Institute geloescht');
+        },
+        error: function () {
+            alert('Fehler beim loeschen');
+        }
+    });
+}
+
 
 
 

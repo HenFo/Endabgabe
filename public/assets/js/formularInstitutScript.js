@@ -226,6 +226,7 @@ function addToDatabase(pObject) {
                 url: "/addInstitutInFachbereich",
                 success: function () {
                     alert('Institut gespeichert');
+                    location.reload();
                 },
                 error: function () {
                     alert('Institut speichern fehlgeschlagen');

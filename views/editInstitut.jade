@@ -57,14 +57,14 @@ html
                   br
           .col-sm-9.mapCol
             #institutForm
-              .searchSection.autocomplete
-                input#searchInput.textfeld.search(type="text" placeholder="Search.." name="search" autocomplete="off")
+              .searchSection.autocomplete(style="border-top:none")
+                input#searchInput.textfeld.search(type="text" placeholder="Search.." name="search" autocomplete="off" autofocus='')
                 button#submitSearch.submit(type='button' value='Suchen')
                   i.fa.fa-search
               button#deleteInst.btn.red Institut 
                 i.fa.fa-trash-o
               h3 Name des Institutes
-              input#InstitutName.textfeld(type='text', placeholder='Name des Institutes', autofocus='')
+              input#InstitutName.textfeld(type='text', placeholder='Name des Institutes')
               h3 Fachbereich
               select#fachbereichSelect.textfeld(style='width:auto')
                 option(value='1') wähle zugehörigen Fachbereich

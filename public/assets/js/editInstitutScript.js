@@ -143,18 +143,22 @@ $(document).ready(function () {
                 flag = instituteArr[i].data.features[0].properties.name == hName;
                 i++;
             }
-            i--;
-            $("#InstitutName").val(instituteArr[i].data.features[0].properties.name);
-            $("#fachbereichSelect").val(instituteArr[i].data.features[0].properties.fachbereich);
-            $("#InstitutBildURL").val(instituteArr[i].data.features[0].properties.image);
-            var polygon = L.polygon(instituteArr[i].data.features[0].geometry.coordinates, {}).addTo(map);
-            Institute.addLayer(polygon);
-            geoJsonLayers.features.push(instituteArr[i].data.features[0]);
-            map.fitBounds(polygon.getBounds());
-            instID = instituteArr[i].ObjectID;
+            if (i <= instituteArr.length) {
+                i--;
+                $("#InstitutName").val(instituteArr[i].data.features[0].properties.name);
+                $("#fachbereichSelect").val(instituteArr[i].data.features[0].properties.fachbereich);
+                $("#InstitutBildURL").val(instituteArr[i].data.features[0].properties.image);
+                var polygon = L.polygon(instituteArr[i].data.features[0].geometry.coordinates, {}).addTo(map);
+                Institute.addLayer(polygon);
+                geoJsonLayers.features.push(instituteArr[i].data.features[0]);
+                map.fitBounds(polygon.getBounds());
+                instID = instituteArr[i].ObjectID;
+            } else {
+                alert("Institut nicht vorhanden");
+            }
         }
     })
-})
+});
 
 
 var hGeometryInput = 0;
@@ -298,17 +302,18 @@ $(document).ready(function () {
 
 $(document).ready(function () {
     $("#deleteInst").click(function () {
-        if (confirm("Press a button!")) {
-            var object = {
-                "ID": instID,
-                "name": $("#InstitutName").val(),
-                "fachbereich": $("#fachbereichSelect").val(),
-            };
+        if (confirm("Institut wirklich loeschen?")) {
+            var object = { "ObjectID": instID };
             $.ajax({
                 type: 'POST',
                 data: object,
                 url: "/deleteInstitut",
                 success: function () {
+                    object = {
+                        "ID": instID,
+                        "name": $("#InstitutName").val(),
+                        "fachbereich": $("#fachbereichSelect").val(),
+                    };
                     $.ajax({
                         type: 'POST',
                         data: object,

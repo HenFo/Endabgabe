@@ -201,9 +201,8 @@ router.post('/saveInstitutInFachbereich', function (req, res) {
 router.post('/deleteInstitut', function (req, res) {
     var db = req.db;
     var document = req.body;
-    var ID = document.ID;
     JL().debug(document);
-    db.collection('institute').remove({"ObjectID": ID}, function (err, result) {
+    db.collection('institute').remove(document, function (err, result) {
         if (err) {
 
         } else {
@@ -237,12 +236,111 @@ router.post('/deleteInstitutFromFachbereich', function (req, res) {
     });
 })
 
+router.post('/clearInstitut', function (req, res) {
+    var db = req.db;
+    db.collection('institute').remove({}, function (err, result) {
+        if (err) {
+
+        } else {
+            res.send(result);
+        }
+    });
+})
+
+router.post('/clearFachbereiche', function (req, res) {
+    var db = req.db;
+    db.collection('fachbereiche').remove({}, function (err, result) {
+        if (err) {
+
+        } else {
+            res.send(result);
+        }
+    });
+})
+
+router.post('/clearRouten', function (req, res) {
+    var db = req.db;
+    db.collection('routen').remove({}, function (err, result) {
+        if (err) {
+
+        } else {
+            res.send(result);
+        }
+    });
+})
+
 router.post('/addRoute', function (req, res) {
     var db = req.db;
     var document = req.body.data;
     document = JSON.parse(document);
     JL().debug(document);
     db.collection('routen').insert(document, function (err, result) {
+        if (err) {
+
+        } else {
+            res.send(document);
+        }
+    });
+})
+
+router.post('/deleteRoute', function (req, res) {
+    var db = req.db;
+    var document = req.body.data;
+    document = JSON.parse(document);
+    db.collection('routen').remove({"name": document.name }, function(err, result) {
+        if (err) {
+
+        } else {
+            res.send(document);
+        }
+    });
+})
+
+router.post('/editRoute', function (req, res) {
+    var db = req.db;
+    var document = req.body.data;
+    document = JSON.parse(document);
+    db.collection('routen').update({ "name": document.name }, { $set: { "name":document.name,"start": document.start, "ziel": document.ziel } }, function (err, result) {
+        if (err) {
+
+        } else {
+            res.send(document);
+        }
+    });
+})
+
+router.post('/editFachbereich', function (req, res) {
+    var db = req.db;
+    var document = req.body;
+    JL().debug(document);
+    var ID = document.id;
+    document = JSON.parse(document.object);
+    JL().debug(document);
+    db.collection('fachbereiche').update({ "abkuerzung": ID }, { $set: { "name": document.name, "webseite": document.webseite } }, function (err, result) {
+        if (err) {
+
+        } else {
+            res.send(document);
+        }
+    });
+})
+
+router.post('/deleteFachbereich', function (req, res) {
+    var db = req.db;
+    var document = req.body;
+    db.collection('fachbereiche').remove(document, function (err, result) {
+        if (err) {
+
+        } else {
+            res.send(document);
+        }
+    });
+})
+
+router.post('/deleteInstituteInFachbereich', function (req, res) {
+    var db = req.db;
+    var document = req.body;
+    db.collection('institute').remove(document, function (err, result) {
         if (err) {
 
         } else {
