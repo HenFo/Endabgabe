@@ -217,10 +217,20 @@ function addToDatabase(pObject) {
     console.log(pObject);
     $.ajax({
         type: 'POST',
-        data: { "ObjectType": "Institut", "data": object },
+        data: { "ObjectID": "Institut"+pObject.features[0].properties.name, "data": object },
         url: "/addInstitut",
         success: function () {
-            alert('Institut gespeichert');
+            $.ajax({
+                type: 'POST',
+                data: { "data": object },
+                url: "/addInstitutInFachbereich",
+                success: function () {
+                    alert('Institut gespeichert');
+                },
+                error: function () {
+                    alert('Institut speichern fehlgeschlagen');
+                }
+            });
             
         },
         error: function () {
@@ -228,17 +238,7 @@ function addToDatabase(pObject) {
         }
     });
 
-    $.ajax({
-        type: 'POST',
-        data: {"data": object},
-        url: "/addInstitutInFachbereich",
-        success: function () {
-            alert('Institut in Fachbereich gespeichert');
-        },
-        error: function () {
-            alert('Institut speichern fehlgeschlagen');
-        }
-    });
+    
 }
 
 $(document).ready(function () {

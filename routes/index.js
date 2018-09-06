@@ -96,14 +96,29 @@ router.post('/addFachbereich', function (req, res) {
 router.post('/addInstitut', function (req, res) {
     var db = req.db;
     var document = req.body;
-    var type = document.ObjectType;
+    var ID = document.ObjectID;
     var data = JSON.parse(document.data);
-    document = { "ObjectType": type, "data": data };
+    document = { "ObjectID": ID, "data": data };
     db.collection('institute').insert(document, function (err, result) {
         if (err) {
             JL().debug(err);
         } else {
             res.send(document);
+        }
+    });
+})
+
+router.post('/saveInstitut', function (req, res) {
+    var db = req.db;
+    var document = req.body;;
+    var ID = document.ObjectID;
+    var data = JSON.parse(document.data);
+    db.collection('institute').update({ "ObjectID": ID }, {
+        $set: { "ObjectID": ID, "data": data }} , function (err, result) {
+        if (err) {
+            JL().debug(err);
+        } else {
+            res.send(result);
         }
     });
 })
@@ -137,6 +152,82 @@ router.post('/addInstitutInFachbereich', function (req, res) {
                         JL().debug(err);
                     } else {
                         JL().debug("5");
+                        res.send(result);
+                    }
+                }
+            });
+            res.send(docs);
+        }
+    });
+})
+
+router.post('/saveInstitutInFachbereich', function (req, res) {
+    var db = req.db;
+    var document = req.body;
+    var data = JSON.parse(document.data).features[0].properties;
+    var hFachbereich = data.fachbereich;
+    db.collection('fachbereiche').find({ "abkuerzung": hFachbereich }, {}, function (e, docs) {
+        if (e) { JL().debug(e); } else {
+            JL().debug("3");
+            JL().debug(docs[0]);
+            if (typeof docs[0].institute !== "undefined") {
+                var institute = docs[0].institute;
+            } else {
+                var institute = [];
+            }
+            var i = 0, flag = false;
+            while (i < institute.length && !flag) {
+                flag = institute[i].name == data.name;
+                i++
+            }
+            institute.splice(i - 1, 1, data);
+            JL().debug("4");
+            db.collection('fachbereiche').update({ "abkuerzung": hFachbereich }, {
+                $set: { "institute": institute }, function(err, result) {
+                    if (err) {
+                        JL().debug("4.5");
+                        JL().debug(err);
+                    } else {
+                        JL().debug("5");
+                        res.send(result);
+                    }
+                }
+            });
+            res.send(docs);
+        }
+    });
+})
+
+router.post('/deleteInstitut', function (req, res) {
+    var db = req.db;
+    var document = req.body;
+    var ID = document.ID;
+    JL().debug(document);
+    db.collection('institute').remove({"ObjectID": ID}, function (err, result) {
+        if (err) {
+
+        } else {
+            res.send(document);
+        }
+    });
+})
+
+router.post('/deleteInstitutFromFachbereich', function (req, res) {
+    var db = req.db;
+    var document = req.body;
+    db.collection('fachbereiche').find({ "abkuerzung": document.fachbereich }, {}, function (e, docs) {
+        if (e) { JL().debug(e); } else {
+            var i = 0, flag = false, institute = docs[0].institute;
+            while (i < institute.length && !flag) {
+                flag = institute[i].name == document.name;
+                i++
+            }
+            institute.splice(i - 1, 1);
+            db.collection('fachbereiche').update({ "abkuerzung": document.fachbereich }, {
+                $set: { "institute": institute }, function(err, result) {
+                    if (err) {
+                        JL().debug(err);
+                    } else {
                         res.send(result);
                     }
                 }

@@ -35,6 +35,11 @@ a:active {
     color: white;
 }
 
+#deleteInst.red {
+    width:20%;
+    margin-bottom:10px;
+    display:none;
+}
 .mapCol {
 }
 

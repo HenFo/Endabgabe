@@ -61,14 +61,15 @@ html
                 input#searchInput.textfeld.search(type="text" placeholder="Search.." name="search" autocomplete="off")
                 button#submitSearch.submit(type='button' value='Suchen')
                   i.fa.fa-search
-
+              button#deleteInst.btn.red Institut 
+                i.fa.fa-trash-o
               h3 Name des Institutes
               input#InstitutName.textfeld(type='text', placeholder='Name des Institutes', autofocus='')
               h3 Fachbereich
               select#fachbereichSelect.textfeld(style='width:auto')
                 option(value='1') wähle zugehörigen Fachbereich
                 each val in fachbereiche 
-                  option= val.abkuerzung
+                  option(value=val.abkuerzung)= val.abkuerzung
               h3 Bild
               input#InstitutBildURL.textfeld(type='url', placeholder='Bild-URL einfügen')
               h3
@@ -90,4 +91,5 @@ html
     script(src='../assets/js/jquery.min.js')
     script(src='../assets/bootstrap/js/bootstrap.min.js')
     script(src='../assets/js/theme.js')
-    script(src='../assets/js/formularInstitutScript.js')
+    script(src='../assets/js/editInstitutScript.js')
+    script(src='../assets/js/autocomplete.js')
