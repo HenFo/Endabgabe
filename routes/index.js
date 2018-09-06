@@ -271,10 +271,11 @@ router.post('/clearRouten', function (req, res) {
 
 router.post('/addRoute', function (req, res) {
     var db = req.db;
-    var document = req.body.data;
-    document = JSON.parse(document);
+    var document = req.body;
+    var ID = document.ObjectID;
+    document = JSON.parse(document.data);
     JL().debug(document);
-    db.collection('routen').insert(document, function (err, result) {
+    db.collection('routen').insert({ "ObjectID": ID, "name":document.name, "start":document.start, "ziel":document.ziel }, function (err, result) {
         if (err) {
 
         } else {
@@ -285,9 +286,9 @@ router.post('/addRoute', function (req, res) {
 
 router.post('/deleteRoute', function (req, res) {
     var db = req.db;
-    var document = req.body.data;
-    document = JSON.parse(document);
-    db.collection('routen').remove({"name": document.name }, function(err, result) {
+    var document = req.body;
+    JL().debug(document);
+    db.collection('routen').remove(document, function(err, result) {
         if (err) {
 
         } else {
@@ -298,9 +299,13 @@ router.post('/deleteRoute', function (req, res) {
 
 router.post('/editRoute', function (req, res) {
     var db = req.db;
-    var document = req.body.data;
-    document = JSON.parse(document);
-    db.collection('routen').update({ "name": document.name }, { $set: { "name":document.name,"start": document.start, "ziel": document.ziel } }, function (err, result) {
+    var document = req.body;
+    JL().debug(document);
+    var ID = document.ObjectID;
+    JL().debug(ID);
+    document = JSON.parse(document.data);
+    JL().debug(document);
+    db.collection('routen').update({ "ObjectID": ID }, { $set: document }, function (err, result) {
         if (err) {
 
         } else {

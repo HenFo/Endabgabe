@@ -262,10 +262,10 @@ function generateList(data, type) {
             break;
         case 2: //routen
             var waypoints = { "start": data[0].start, "ziel": data[0].ziel };
-            var name = { "name": data[0].name };
+            var name = { "ID": data[0].ObjectID };
             name = JSON.stringify(name);
             waypoints = JSON.stringify(waypoints);
-            html += "<li class='lists' onclick='showOnMap(" + waypoints + ")'>" + data[0].name + "<button class='routeEdit' onclick='deleteRoute(" + name + ")'><i class='fa fa-trash-o'></i></button><button class='routeEdit' onclick='editRoute(" + name+")'><i class='fa fa-pencil'></i></button></li>";
+            html += "<li class='lists' onclick='showOnMap(" + waypoints + ")'>" + data[0].name + "<button class='routeEdit' onclick='deleteRoute(" + name + ")'><i class='fa fa-trash-o'></i></button><button class='routeEdit' onclick='editRoute(" + name +")'><i class='fa fa-pencil'></i></button></li>";
             document.getElementById("searchTable").innerHTML += html;
             break;
         case 3: //mensen
@@ -279,14 +279,44 @@ function deleteRoute(pRoutenName) {
     if (confirm("Route sicher loeschen?!")) {
         $.ajax({
             type: 'POST',
-            data: pRoutenName,
+            data: { "ObjectID": pRoutenName.ID },
             url: "/deleteRoute",
             success: function (data) {
-                alert("Route " + pRoutenName.name + " wurde geloescht!");
+                alert("Route wurde geloescht!");
                 location.reload();
             },
             error: function (xhr) {
                 alert("Fehler beim loeschen der Route");
+            }
+        });
+    }
+}
+
+function editRoute(pRoutenName) {
+    if (confirm("Route sicher aendern?!")) {
+        var start = {
+            "lat": control.getWaypoints()[0].latLng.lat, "lng": control.getWaypoints()[0].latLng.lng
+        };
+        var ziel = {
+            "lat": control.getWaypoints()[control.getWaypoints().length - 1].latLng.lat, "lng": control.getWaypoints()[control.getWaypoints().length - 1].latLng.lng
+        };
+        var object = new Route(pRoutenName.name, start, ziel);
+        object = object.toJSON();
+        object = JSON.stringify(object);
+        object = { "ObjectID": "route" + pRoutenName.name, "data": object };
+        console.log(object);
+        $.ajax({
+            type: 'POST',
+            data: object,
+            url: "/editRoute",
+            success: function (data) {
+                document.getElementById("searchTable").innerHTML = "";
+                showOnMap({ "start": start, "ziel": ziel });
+                findRoute(pRoutenName.name);
+                alert("Route " + pRoutenName.name + " wurde bearbeitet!");
+            },
+            error: function (xhr) {
+                alert("Fehler beim aendern der Route");
             }
         });
     }
@@ -340,7 +370,7 @@ function saveRoute() {
     var object = new Route(name, start, ziel);
     object = object.toJSON();
     object = JSON.stringify(object);
-    object = { "type": "route", "data": object };
+    object = { "ObjectID": "route" + name, "data": object };
     $.ajax({
         type: 'POST',
         data: object,
