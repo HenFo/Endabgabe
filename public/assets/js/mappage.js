@@ -167,7 +167,6 @@ $(document).ready(function () {
         document.getElementById("searchTable").innerHTML = "";
         //suchbegriff
         var search = document.getElementById("searchInput").value.toLowerCase();
-        if (search != "") {
             //suchen aller Indizes, die auf die Eingabe passen
             var i = 0, res = [];
             while (i < autoArr.length) {
@@ -206,7 +205,7 @@ $(document).ready(function () {
                 }
             }
         }
-    })
+    )
 })
 
 /**
