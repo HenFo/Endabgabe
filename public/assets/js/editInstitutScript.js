@@ -304,19 +304,33 @@ function saveToDatabase(pObject) {
             }
         });
     } else {
-        var object = { "ObjectID": instID, "fachbereich": pObject.features[0].properties.fachbereich };
+        var object = JSON.stringify(pObject);
         $.ajax({
             type: 'POST',
             data: { "ObjectID": instID, "data": object },
             url: "/saveInstitut",
             success: function () {
                 //Institut in seinem Fachbereich aendern
+                object = { "ObjectID": instID, "fachbereich": fach };
                 $.ajax({
                     type: 'POST',
                     data: object,
                     url: "/deleteInstitutFromFachbereich",
                     success: function () {
-                        location.reload();
+                        object = JSON.stringify(pObject);
+                        $.ajax({
+                            type: 'POST',
+                            data: { "ObjectID": instID, "data": object },
+                            url: "/addInstitutInFachbereich",
+                            success: function () {
+                                alert('Institut gespeichert');
+                                //Seite neu laden
+                                location.reload();
+                            },
+                            error: function () {
+                                alert('Institut speichern fehlgeschlagen');
+                            }
+                        })
                     },
                     error: function () {
                         alert('Institut speichern fehlgeschlagen');
@@ -377,6 +391,7 @@ $(document).ready(function () {
                         url: "/deleteInstitutFromFachbereich",
                         success: function () {
                             alert('Institut geloescht');
+                            location.reload();
                         },
                         error: function () {
                             alert('Institut loeschen fehlgeschlagen');

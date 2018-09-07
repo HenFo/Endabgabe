@@ -286,10 +286,12 @@ router.post('/deleteInstitut', function (req, res) {
 router.post('/deleteInstitutFromFachbereich', function (req, res) {
     var db = req.db;
     var document = req.body;
+    JL().debug(document);
     db.collection('fachbereiche').find({ "abkuerzung": document.fachbereich }, {}, function (err, docs) {
         if (err) { JL().fatal(err); } else {
             //suche nach betroffenen Instituten
             var i = 0, flag = false, institute = docs[0].institute;
+            JL().debug(institute);
             while (i < institute.length && !flag) {
                 flag = institute[i].ObjectID == document.ObjectID;
                 i++
