@@ -61,6 +61,7 @@ function addToDatabase(object) {
         url: "/addFachbereich",
         success: function () {
             alert('Fachbereich gespeichert');
+            location.reload();
         },
         error: function () {
             alert('Speichern fehlgeschlagen');

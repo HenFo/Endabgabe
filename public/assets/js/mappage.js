@@ -375,10 +375,10 @@ function editRoute(pRoutenName) {
             "lat": control.getWaypoints()[control.getWaypoints().length - 1].latLng.lat, "lng": control.getWaypoints()[control.getWaypoints().length - 1].latLng.lng
         };
         //generieren einer neuen Route
-        var object = new Route(pRoutenName.name, start, ziel);
+        var object = new Route(pRoutenName.ID.substring(5), start, ziel);
         object = object.toJSON();
         object = JSON.stringify(object);
-        object = { "ObjectID": "route" + pRoutenName.name, "data": object };
+        object = { "ObjectID": pRoutenName.ID, "data": object };
         //aktualisieren der Route in der DB
         $.ajax({
             type: 'POST',
@@ -389,8 +389,8 @@ function editRoute(pRoutenName) {
                 //Route auf der Karte anzeigen
                 showOnMap({ "start": start, "ziel": ziel });
                 //aktualisierte Route in der Liste anzeigen
-                findRoute(pRoutenName.name);
-                alert("Route " + pRoutenName.name + " wurde bearbeitet!");
+                findRoute(pRoutenName.ID.substring(5));
+                alert("Route wurde bearbeitet!");
             },
             error: function (xhr) {
                 alert("Fehler beim aendern der Route");

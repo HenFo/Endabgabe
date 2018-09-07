@@ -130,6 +130,7 @@ class Institut {
 var autoArr = []; //Array fuer Autocomplete
 var instituteArr = []; //Array fuer die Institute
 var instID = ""; //ID des aktuell bearbeiteten Instituts
+var fach = ""; //ueberpruefen ob Fachbereich geaendert wurde
 
 /**
  * Startet sobald die Seite aufgerufen wird
@@ -176,6 +177,7 @@ $(document).ready(function () {
                 //zoomen zur geometrie
                 map.fitBounds(polygon.getBounds());
                 instID = instituteArr[i].ObjectID;
+                fach = $("#fachbereichSelect").val();
             } else {
                 alert("Institut nicht vorhanden");
             }
@@ -277,29 +279,55 @@ function loadDoc() {
  * @param {JSON} pObject bearbeitetes Institut
  */
 function saveToDatabase(pObject) {
-    var object = JSON.stringify(pObject);
-    $.ajax({
-        type: 'POST',
-        data: { "ObjectID": instID, "data": object },
-        url: "/saveInstitut",
-        success: function () {
-            //Institut in seinem Fachbereich aendern
-            $.ajax({
-                type: 'POST',
-                data: { "data": object },
-                url: "/saveInstitutInFachbereich",
-                success: function () {
-                    
-                },
-                error: function () {
-                    alert('Institut speichern fehlgeschlagen');
-                }
-            });
-        },
-        error: function () {
-            alert('Speichern fehlgeschlagen');
-        }
-    });
+    if (pObject.features[0].properties.fachbereich == fach) {
+        var object = JSON.stringify(pObject);
+        $.ajax({
+            type: 'POST',
+            data: { "ObjectID": instID, "data": object },
+            url: "/saveInstitut",
+            success: function () {
+                //Institut in seinem Fachbereich aendern
+                $.ajax({
+                    type: 'POST',
+                    data: { "ObjectID": instID, "data": object },
+                    url: "/saveInstitutInFachbereich",
+                    success: function () {
+                        location.reload();
+                    },
+                    error: function () {
+                        alert('Institut speichern fehlgeschlagen');
+                    }
+                });
+            },
+            error: function () {
+                alert('Speichern fehlgeschlagen');
+            }
+        });
+    } else {
+        var object = { "ObjectID": instID, "fachbereich": pObject.features[0].properties.fachbereich };
+        $.ajax({
+            type: 'POST',
+            data: { "ObjectID": instID, "data": object },
+            url: "/saveInstitut",
+            success: function () {
+                //Institut in seinem Fachbereich aendern
+                $.ajax({
+                    type: 'POST',
+                    data: object,
+                    url: "/deleteInstitutFromFachbereich",
+                    success: function () {
+                        location.reload();
+                    },
+                    error: function () {
+                        alert('Institut speichern fehlgeschlagen');
+                    }
+                });
+            },
+            error: function () {
+                alert('Speichern fehlgeschlagen');
+            }
+        });
+    }
 }
 
 //tauscht die Eingabemethoden

@@ -8,6 +8,8 @@ var logger = require('morgan');
 var mongo = require('mongodb');
 var monk = require('monk');
 var db = monk('localhost:27017/GeoCollection');
+//var db = monk('mongodb://mongoservice/GeoCollection');
+
 
 
 var indexRouter = require('./routes/index');

@@ -250,7 +250,7 @@ function addToDatabase(pObject) {
         success: function () {
             $.ajax({
                 type: 'POST',
-                data: { "data": object },
+                data: { "ObjectID": "Institut" + pObject.features[0].properties.name, "data": object },
                 url: "/addInstitutInFachbereich",
                 success: function () {
                     alert('Institut gespeichert');

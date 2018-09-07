@@ -186,6 +186,8 @@ router.post('/editRoute', function (req, res) {
     var document = req.body;
     var ID = document.ObjectID;
     document = JSON.parse(document.data);
+    JL().debug(ID);
+    JL().debug(document);
     db.collection('routen').update({ "ObjectID": ID }, { $set: document }, function (err, result) {
         if (err) {
             JL().fatal(err);
@@ -202,6 +204,7 @@ router.post('/addInstitutInFachbereich', function (req, res) {
     var db = req.db;
     var document = req.body;
     var data = JSON.parse(document.data).features[0].properties;
+    data = { "ObjectID": document.ObjectID, "name": data.name, "fachbereich": data.fachbereich, "image": data.image };
     var hFachbereich = data.fachbereich;
     //Fachbereich finden
     db.collection('fachbereiche').find({ "abkuerzung": hFachbereich }, {}, function (err, docs) {
@@ -235,13 +238,14 @@ router.post('/saveInstitutInFachbereich', function (req, res) {
     var db = req.db;
     var document = req.body;
     var data = JSON.parse(document.data).features[0].properties;
+    data = { "ObjectID": document.ObjectID, "name": data.name, "fachbereich": data.fachbereich, "image": data.image };
     var hFachbereich = data.fachbereich;
     db.collection('fachbereiche').find({ "abkuerzung": hFachbereich }, {}, function (err, docs) {
         if (err) { JL().debug(err); } else {
             //finde betroffenes Institut
             var i = 0, flag = false, institute = docs[0].institute;
             while (i < institute.length && !flag) {
-                flag = institute[i].name == data.name;
+                flag = institute[i].ObjetID == data.ObjectID;
                 i++
             }
             //Institut ersetzen
@@ -287,7 +291,7 @@ router.post('/deleteInstitutFromFachbereich', function (req, res) {
             //suche nach betroffenen Instituten
             var i = 0, flag = false, institute = docs[0].institute;
             while (i < institute.length && !flag) {
-                flag = institute[i].name == document.name;
+                flag = institute[i].ObjectID == document.ObjectID;
                 i++
             }
             //institut loeschen
