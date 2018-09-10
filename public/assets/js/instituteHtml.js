@@ -27,7 +27,7 @@ map.addControl(new L.Control.Fullscreen().setPosition("topright"));
 L.control.layers({
     "outdoor": outdor.addTo(map),
     "satellite": satellite,
-},null , { position: 'topright' }).addTo(map);
+}, null, { position: 'topright' }).addTo(map);
 
 /////////////////////////////////////////////////////////////////////////////////////
 //aus der Code-Review von Nr. 7 Buttons to create start and end points of the route
@@ -74,30 +74,56 @@ var institutPopups = [];
  * Startet sobald die Seite aufgerufen wird
  */
 window.onload = function () {
-    //Sammelt alle Institute
-    $.ajax({
-        type: 'GET',
-        url: "/getAllInstitutes",
-        success: function (data) {
-            var html = "";
-            for (var x in data) {
-                //sammeln der Daten fuer die HTML Seite
-                var name = data[x].data.features[0].properties.name;
-                var fach = data[x].data.features[0].properties.fachbereich;
-                var img = data[x].data.features[0].properties.image;
-                //erstellen der Geometrie fuer die Karte
-                var polygon = L.polygon(data[x].data.features[0].geometry.coordinates, {}).addTo(map).bindPopup(createPopup(name, fach, img));
-                Institute.addLayer(polygon);
-                institutPopups.push(polygon);
-                html += generateHtml(data[x].data, x);
-            }
-            //generierten HTML-String in die Seite einfuegen
-            document.getElementById("InstituteTable").innerHTML = html;
-        },
-        error: function (xhr) {
+    var documentTitle = document.title;
+    if (documentTitle === "Institute") {
+        //Sammelt alle Institute
+        $.ajax({
+            type: 'GET',
+            url: "/getAllInstitutes",
+            success: function (data) {
+                var html = "";
+                for (var x in data) {
+                    //sammeln der Daten fuer die HTML Seite
+                    var name = data[x].data.features[0].properties.name;
+                    var fach = data[x].data.features[0].properties.fachbereich;
+                    var img = data[x].data.features[0].properties.image;
+                    //erstellen der Geometrie fuer die Karte
+                    var polygon = L.polygon(data[x].data.features[0].geometry.coordinates, {}).addTo(map).bindPopup(createPopup(name, fach, img));
+                    Institute.addLayer(polygon);
+                    institutPopups.push(polygon);
+                    html += generateHtml(data[x].data, x);
+                }
+                //generierten HTML-String in die Seite einfuegen
+                document.getElementById("InstituteTable").innerHTML = html;
+            },
+            error: function (xhr) {
 
-        }
-    });
+            }
+        });
+    } else {
+        $.ajax({
+            type: 'POST',
+            url: "/findInstitut",
+            data: { "ObjectID": "Institut" + documentTitle },
+            success: function (data) {
+                var html = "";
+                for (var x in data) {
+                    //sammeln der Daten fuer die HTML Seite
+                    var name = data[x].data.features[0].properties.name;
+                    var fach = data[x].data.features[0].properties.fachbereich;
+                    var img = data[x].data.features[0].properties.image;
+                    //erstellen der Geometrie fuer die Karte
+                    var polygon = L.polygon(data[x].data.features[0].geometry.coordinates, {}).addTo(map).bindPopup(createPopup(name, fach, img));
+                    polygon.openPopup;
+                    Institute.addLayer(polygon);
+                    institutPopups.push(polygon);
+                    html += generateHtml(data[x].data, x);
+                }
+                //generierten HTML-String in die Seite einfuegen
+                document.getElementById("InstituteTable").innerHTML = html;
+            }
+        })
+    }
 }
 
 /**
@@ -110,12 +136,12 @@ function openInformation(pID) {
 
 /**
  * Erstellt ein Popup fuer ein Institut
- * @param {String} pName NAme des Instituts
+ * @param {String} pName Name des Instituts
  * @param {String} pFach Name des Fachbereichs des Instituts
  * @param {image} pBild Bild des Instituts
  */
 function createPopup(pName, pFach, pBild) {
-    var str = "<table class='table'><tr><td>" + pName + "</td><td>" + pFach + "</td><td><img src='" + pBild + "' height=60 /></td></tr><table>";
+    var str = "<table class='table'><tr><td>" + pName + "</td><td>" + pFach + "</td><td><img src='" + pBild + "' height=60 /></td></tr><table><br/><a class='btn popup' href='/institute/"+pName+"'>Permalink</a>";
     return str;
 }
 
@@ -127,6 +153,10 @@ function createPopup(pName, pFach, pBild) {
 function generateHtml(pInstitut, pID) {
     var str = "<li class='lists' onclick='openInformation(" + pID + ")'>" + pInstitut.features[0].properties.name + " aus " + pInstitut.features[0].properties.fachbereich + "</li>";
     return str;
+}
+
+function showPermalink(link) {
+    alert("localhost:3000/institute/" + link);
 }
 
 /**

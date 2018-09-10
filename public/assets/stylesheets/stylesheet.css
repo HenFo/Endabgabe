@@ -96,12 +96,15 @@ h3 {
     height: 100%;
     width: 100%;
 }
+
 .startImage {
-    width:100%;
+    width: 100%;
 }
+
 .fachImage {
-    max-height:100px;
+    max-height: 100px;
 }
+
 .editingOptions {
     margin-top: 10px;
 }
@@ -195,6 +198,10 @@ tr.tableEmpty {
         background-color: #009933;
         color: white;
     }
+
+a.popup {
+    color:white;
+}
 
 .gps {
     width: auto;

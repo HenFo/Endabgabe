@@ -4,7 +4,7 @@ var router = express.Router();
 var JL = require('jsnlog').JL;
 var jsnlog_nodejs = require('jsnlog-nodejs').jsnlog_nodejs;
 
- //GET home page. 
+//GET home page. 
 router.get('/', function (req, res, next) {
     res.render('index', { title: 'Startseite' });
 });
@@ -31,6 +31,11 @@ router.get('/fachbereich/index', function (req, res) {
 //GET institute page
 router.get('/institute/index', function (req, res) {
     res.render('institute', { title: 'Institute' });
+})
+
+//GET institute Permalink page
+router.get('/institute/:name', function (req, res) {
+    res.render('institute', { title: req.params.name });
 })
 
 //GET impressum page
@@ -68,7 +73,8 @@ router.get('/editInstitut/institute', function (req, res) {
         if (e) { res.render('editInstitut', { title: 'Bearbeite ein Institut' }); } else {
             res.render('editInstitut', { title: 'Bearbeite ein Institut', "fachbereiche": docs });
         }
-    });})
+    });
+})
 
 //GET alle gespeicherten Fachbereiche
 router.get('/getAllFachbereiche', function (req, res) {
@@ -152,7 +158,8 @@ router.post('/saveInstitut', function (req, res) {
     var ID = document.ObjectID;
     var data = JSON.parse(document.data);
     db.collection('institute').update({ "ObjectID": ID }, {
-        $set: { "ObjectID": ID, "data": data }} , function (err, result) {
+        $set: { "ObjectID": ID, "data": data }
+    }, function (err, result) {
         if (err) {
             JL().fatal(err);
         } else {
@@ -352,7 +359,7 @@ router.post('/clearRouten', function (req, res) {
 router.post('/deleteRoute', function (req, res) {
     var db = req.db;
     var document = req.body;
-    db.collection('routen').remove(document, function(err, result) {
+    db.collection('routen').remove(document, function (err, result) {
         if (err) {
             JL().fatal(err);
         } else {
