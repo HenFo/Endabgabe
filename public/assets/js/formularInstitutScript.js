@@ -129,7 +129,7 @@ class Institut {
 }
 
 
-
+var instituteArr = [];
 window.onload = function () {
     //sammeln aller institute und fuegt sie der Karte hinzu
     $.ajax({
@@ -137,6 +137,7 @@ window.onload = function () {
         url: "/getAllInstitutes",
         success: function (data) {
             for (var x in data) {
+                instituteArr.push(data[x].data.features[0].properties);
                 var polygon = L.polygon(data[x].data.features[0].geometry.coordinates, {}).addTo(map);
                 Institute.addLayer(polygon);
             }
@@ -161,6 +162,7 @@ function addInstitut() {
     if (fachbereich == "wähle Fachbereich") { alert("bitte Fachbereich auswählen"); }
     else if (name == "") { alert("bitte Namen eingeben");}
     else if (!isURL(img)) { alert("bitte korrekte URL angeben"); }
+    else if (istEnthalten(name, fachbereich, instituteArr)) { alert("gleichnamiges Institut bereits im Fachbereich enthalten");}
     else {
         //waehlt die passende Verarbeitung der Geometrie
         switch (hGeometryInput) {
@@ -182,7 +184,7 @@ function addInstitut() {
                     var institut = new Institut(name, fachbereich, img, geometry);
                     //zur DB hinzufuegen
                     addToDatabase(institut.toGeoJSON());
-                } catch (e) { alert(e) }
+                } catch (e) { alert("bitte valides GeoJSON eingeben"); location.reload(); }
                 break;
             default: //fangen aller Fehler
                 alert("Geometrie eingeben");
@@ -198,8 +200,10 @@ function addInstitut() {
  */
 function returnGeometry(pGeoJSON) {
     if (pGeoJSON.type == "FeatureCollection") {
+        pGeoJSON.features[0].geometry.coordinates = switchCoordinates(pGeoJSON.features[0]);
         return pGeoJSON.features[0].geometry;
     } else {
+        pGeoJSON.geometry.coordinates = switchCoordinates(pGeoJSON);
         return pGeoJSON.geometry;
     }
 }
@@ -216,9 +220,8 @@ function loadDoc() {
             if (this.status == 200 && this.readyState == 4) {
                 try {
                     geoJsonObject = JSON.parse(this.responseText);
-                    console.log(geoJsonObject);
                     return geoJsonObject;
-                } catch (e) { alert(e) };
+                } catch (e) { alert("bitte valides GeoJSON eingeben") };
             }
         };
 
@@ -230,7 +233,7 @@ function loadDoc() {
         try {
             geoJsonObject = JSON.parse("" + document.getElementById("geoJSON").value);
             return geoJsonObject;
-        } catch (e) { alert(e) };
+        } catch (e) { alert("bitte valides GeoJSON eingeben") };
 
     }
 }
@@ -269,6 +272,22 @@ function addToDatabase(pObject) {
     });
 
 
+}
+
+/**
+ * ueberprueft, ob ein Objekt schon vorhanden ist
+ * @param {String} pName Name des Instituts
+ * @param {String} pFachbereich abkuerzung des Fachbereichs
+ * @param {Array} pArray Array in dem gesucht werden soll
+ * @returns true wenn enthalten, sonst false
+ */
+function istEnthalten(pName, pFachbereich, pArray) {
+    var i = 0, flag = false;
+    while (i < pArray.length && !flag) {
+        flag = pArray[i].name.toLowerCase() == pName.toLowerCase() && pArray[i].fachbereich.toLowerCase() == pFachbereich.toLowerCase();
+        i++
+    }
+    return flag;
 }
 
 //wechseln zwischen den Eingabemoeglichkeiten

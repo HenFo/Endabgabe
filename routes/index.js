@@ -186,8 +186,6 @@ router.post('/editRoute', function (req, res) {
     var document = req.body;
     var ID = document.ObjectID;
     document = JSON.parse(document.data);
-    JL().debug(ID);
-    JL().debug(document);
     db.collection('routen').update({ "ObjectID": ID }, { $set: document }, function (err, result) {
         if (err) {
             JL().fatal(err);
@@ -241,7 +239,7 @@ router.post('/saveInstitutInFachbereich', function (req, res) {
     data = { "ObjectID": document.ObjectID, "name": data.name, "fachbereich": data.fachbereich, "image": data.image };
     var hFachbereich = data.fachbereich;
     db.collection('fachbereiche').find({ "abkuerzung": hFachbereich }, {}, function (err, docs) {
-        if (err) { JL().debug(err); } else {
+        if (err) { JL().fatal(err); } else {
             //finde betroffenes Institut
             var i = 0, flag = false, institute = docs[0].institute;
             while (i < institute.length && !flag) {
@@ -270,7 +268,6 @@ router.post('/saveInstitutInFachbereich', function (req, res) {
 router.post('/deleteInstitut', function (req, res) {
     var db = req.db;
     var document = req.body;
-    JL().debug(document);
     db.collection('institute').remove(document, function (err, result) {
         if (err) {
             JL().fatal(err);
@@ -286,12 +283,10 @@ router.post('/deleteInstitut', function (req, res) {
 router.post('/deleteInstitutFromFachbereich', function (req, res) {
     var db = req.db;
     var document = req.body;
-    JL().debug(document);
     db.collection('fachbereiche').find({ "abkuerzung": document.fachbereich }, {}, function (err, docs) {
         if (err) { JL().fatal(err); } else {
             //suche nach betroffenen Instituten
             var i = 0, flag = false, institute = docs[0].institute;
-            JL().debug(institute);
             while (i < institute.length && !flag) {
                 flag = institute[i].ObjectID == document.ObjectID;
                 i++
@@ -357,7 +352,6 @@ router.post('/clearRouten', function (req, res) {
 router.post('/deleteRoute', function (req, res) {
     var db = req.db;
     var document = req.body;
-    JL().debug(document);
     db.collection('routen').remove(document, function(err, result) {
         if (err) {
             JL().fatal(err);
@@ -444,7 +438,6 @@ router.post('/deleteRoute', function (req, res) {
     var collection = db.get('routen');
     collection.remove(document, function (err, obj) {
         if (err) JL().fatal(err); else {
-            JL().debug(document);
             res.send(obj);
             db.close();
         }

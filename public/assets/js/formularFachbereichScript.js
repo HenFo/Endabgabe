@@ -24,6 +24,21 @@ class Fachbereich {
     }
 }
 
+var fachbereicheArr = [];
+
+window.onload = function() {
+    $.ajax({
+        type: "GET",
+        url: "/getAllFachbereiche",
+        success: function (data) {
+            for (var x in data) {
+                fachbereicheArr.push(data[x].abkuerzung);
+            }
+        },
+        error: function () { alert("Fehler beim laden der Seite"); }
+    })
+}
+
 /**
  * erstellt das Institut aus den gegebenen Angaben
  */
@@ -38,6 +53,7 @@ function addFachbereich() {
     if (name == "") { alert("bitte einen Namen eingeben"); }
     else if (abk == "") { alert("bitte Abkürzung wählen"); }
     else if (!isURL(web)) { alert("bitte korrekte URL angeben"); }
+    else if (istEnthalten(abk, fachbereicheArr)) { alert("Fachbereich bereits vorhanden"); }
     else {
         var hFachb = new Fachbereich(name, abk, web);
 
@@ -67,6 +83,21 @@ function addToDatabase(object) {
             alert('Speichern fehlgeschlagen');
         }
     });
+}
+
+/**
+ * ueberprueft, ob ein Objekt schon vorhanden ist
+ * @param {String} pName Abkuerzung des Fachbereichs
+ * @param {Array} pArray Array in dem gesucht werden soll
+ * @returns true wenn enthalten, sonst false
+ */
+function istEnthalten(pName, pArray) {
+    var i = 0, flag = false;
+    while (i < pArray.length && !flag) {
+        flag = pArray[i].toLowerCase() == pName.toLowerCase();
+        i++;
+    }
+    return flag;
 }
 
 /**

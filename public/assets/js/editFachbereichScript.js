@@ -160,6 +160,7 @@ $(document).ready(function () {
                                     }
                                 });
                             }
+                            location.reload();
                         },
                         error: function () {
                             alert('Institute sammeln fehlgeschlagen');
@@ -174,7 +175,6 @@ $(document).ready(function () {
         }
     });
 });
-
 
 
 

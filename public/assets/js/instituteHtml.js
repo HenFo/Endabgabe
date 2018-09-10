@@ -24,10 +24,10 @@ var Fachbereiche = L.featureGroup().addTo(map);
 
 //Fullscreen Option
 map.addControl(new L.Control.Fullscreen().setPosition("topright"));
-L.control.layers(null, {
+L.control.layers({
     "outdoor": outdor.addTo(map),
     "satellite": satellite,
-}, { position: 'topright' }).addTo(map);
+},null , { position: 'topright' }).addTo(map);
 
 /////////////////////////////////////////////////////////////////////////////////////
 //aus der Code-Review von Nr. 7 Buttons to create start and end points of the route

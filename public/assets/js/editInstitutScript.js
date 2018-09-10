@@ -196,8 +196,9 @@ function addInstitut() {
         var fachbereich = document.getElementById("fachbereichSelect").value;
         var img = document.getElementById("InstitutBildURL").value;
 
-        if (fachbereich == "wähle Fachbereich") { alert("bitte Fachbereich auswählen"); }
-        else if (name == "") { alert("bitte Namen eingeben"); }
+        
+        if (name == "") { alert("bitte Namen eingeben"); }
+        else if (fachbereich == "wähle Fachbereich") { alert("bitte Fachbereich auswählen"); }
         else if (!isURL(img)) { alert("bitte korrekte URL angeben"); }
         else {
             //waehlt die passende Verarbeitung der Geometrie
@@ -381,7 +382,6 @@ $(document).ready(function () {
                     //hinzufuegen von mehr Informationen fuer weitere loeschaktionen
                     object = {
                         "ID": instID,
-                        "name": $("#InstitutName").val(),
                         "fachbereich": $("#fachbereichSelect").val(),
                     };
                     //loeschen des Instituts aus seinem Fachbereich
@@ -405,6 +405,7 @@ $(document).ready(function () {
         }
     });
 });
+
 
 
 var input = document.getElementById("searchInput");
